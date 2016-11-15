@@ -1,0 +1,18 @@
+﻿# комментарий — эта строка игнорируется
+
+# не отслеживать файлы
+
+*.bmp
+*.log
+*.tlog
+*.sdf
+*.obj
+*.opensdf	
+*.idb
+*.pdb
+*.db
+*.opendb
+GeneratedFiles
+
+[Dd]ebug
+[Rr]elease

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <QT_DIR>E:\Enviroment\Qt\Qt5.7\5.7\msvc2015</QT_DIR>
+    <BOOST_DIR>E:\Denis\Work\boost\boost_1_60_0</BOOST_DIR>
+  </PropertyGroup>
+  <PropertyGroup>
+    <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(BOOST_DIR);$(QT_DIR)/include;$(QT_DIR)/include/QtNetwork;$(QT_DIR)/include/QtCore;$(QT_DIR)/include/QtANGLE;$(QT_DIR)/include/QtGui;$(QT_DIR)/include/QtSvg;$(QT_DIR)/include/QtWidgets;$(QWT_DIR)/include;$(SolutionDir)/Common;$(ProjectDir)/headers;$(ProjectDir)/GeneratedFiles</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SolutionDir)/$(Platform)/$(Configuration);$(BOOST_DIR)/stage/lib;$(QWT_DIR)/lib;$(QT_DIR)/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>shell32.lib</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="QT_DIR">
+      <Value>$(QT_DIR)</Value>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_DIR">
+      <Value>$(BOOST_DIR)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

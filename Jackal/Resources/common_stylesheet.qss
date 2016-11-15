@@ -1,0 +1,12 @@
+
+QWidget
+{
+	border: none;
+}
+
+/*
+QPushButton
+{
+	border: none;
+	background-color: #666666;
+}*/
