@@ -1,10 +1,13 @@
 #include "GridMap.h"
+#include "Deck.h"
 
 GridMap::GridMap(size_t _px_size, size_t _corner_radius, QGraphicsItem* _parent /*= 0*/) : RoundedRect(QRectF(QPointF(0,0), QSizeF(_px_size, _px_size)), _corner_radius, _parent)
 {
 	cells.resize(rows_num);
 
 	cell_side_size = std::round((_px_size - 2 * padding_size - (rows_num - 1)*spacer_size)/(double)rows_num);	//todo сделать подбор padding в зависимости от разрешения
+
+	TreasureIslandDeck* deck = new TreasureIslandDeck();
 
 	for (int i = 0; i < rows_num; ++i)
 	{
@@ -20,7 +23,12 @@ GridMap::GridMap(size_t _px_size, size_t _corner_radius, QGraphicsItem* _parent 
 
 				cells[i][j] = new StaticCell(QRectF(0, 0, cell_side_size, cell_side_size), cell_corner_radius, this);
 			else
-				cells[i][j] = new FlippableCell(QRectF(0, 0, cell_side_size, cell_side_size), cell_corner_radius, this);
+			{
+				cells[i][j] = deck->pop_one();
+				cells[i][j]->set_geometry(QRectF(0, 0, cell_side_size, cell_side_size), cell_corner_radius);
+				cells[i][j]->set_parent(this);
+			}
+				
 		
 			cells[i][j]->setPos(get_cell_center(j,i));
 		}

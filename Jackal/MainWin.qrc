@@ -1,16 +1,5 @@
 <RCC>
     <qresource prefix="/">
         <file>Resources/common_stylesheet.qss</file>
-        <file>Resources/cell_img/cell_back_side.png</file>
-        <file>Resources/cell_img/cell_sea.png</file>
-        <file>Resources/cell_img/cell_clicked.png</file>
-        <file>Resources/items/boat_h.png</file>
-        <file>Resources/items/boat_v.png</file>
-        <file>Resources/cell_img/cell_back.png</file>
-        <file>Resources/cell_img/cell_front.png</file>
-        <file>Resources/cell_img/empty-1.png</file>
-        <file>Resources/cell_img/empty-2.png</file>
-        <file>Resources/cell_img/empty-3.png</file>
-        <file>Resources/cell_img/empty-4.png</file>
     </qresource>
 </RCC>

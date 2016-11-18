@@ -9,8 +9,19 @@
 class RoundedRect : public QGraphicsItem
 {
 public:
-	RoundedRect(QRectF _draw_rect, size_t _radius = 0, QGraphicsItem* _parent = 0) : QGraphicsItem(_parent), draw_rect(_draw_rect)
+	RoundedRect(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, QGraphicsItem* _parent = 0) : QGraphicsItem(_parent), draw_rect(_draw_rect)
 	{
+	}
+
+	void set_geometry(const QRectF& _draw_rect, size_t _radius = 0)
+	{
+		draw_rect = _draw_rect;
+		radius = _radius;
+	}
+
+	void set_parent(QGraphicsItem* _parent = 0)
+	{
+		QGraphicsItem::setParentItem(_parent);
 	}
 
 	void set_image(const QPixmap& _pixmap)

@@ -134,6 +134,7 @@
       </Command>
     </CustomBuild>
     <ClInclude Include="Cell.h" />
+    <ClInclude Include="Deck.h" />
     <ClInclude Include="GameLogic.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="GridMap.h" />

@@ -10,8 +10,8 @@ class MainWin : public QMainWindow
 {
 	Q_OBJECT
 
-	const size_t screen_w = 1024;
-	const size_t screen_h = 768;
+	const size_t screen_w = 1400;
+	const size_t screen_h = 1024;
 
 	const size_t padding = 6;
 	const size_t spacing = 6;
