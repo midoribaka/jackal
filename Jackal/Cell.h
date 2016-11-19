@@ -336,10 +336,10 @@ public:
 
 //
 
-class CanonCell : public FlippableCell
+class CanonCell : public RandomDirectionCell
 {
 public:
-	CanonCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	CanonCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : RandomDirectionCell(_draw_rect, _radius, _parent)
 	{
 		set_front_side_image(QPixmap("./Resources/cell_img/gun.png"));
 	}
