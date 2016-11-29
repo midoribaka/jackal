@@ -10,20 +10,32 @@
     <ClCompile Include="MainWin.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_MainWin.cpp">
-      <Filter>_moc\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_GridMap.cpp">
-      <Filter>_moc\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_MainWin.cpp">
-      <Filter>_moc\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_MainWin.cpp">
-      <Filter>_rcc</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_Cell.cpp">
       <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_MainWin.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_GridMap.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MainWin.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_GridMap.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MainWin.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Cell.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_GridMap.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_MainWin.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -42,15 +54,15 @@
     <ClInclude Include="Player.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="RoundedRect.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GridMap.h">
       <Filter>Headers</Filter>
     </CustomBuild>
     <CustomBuild Include="MainWin.h">
-      <Filter>Headers</Filter>
-    </CustomBuild>
-    <CustomBuild Include="RoundedRect.h">
       <Filter>Headers</Filter>
     </CustomBuild>
     <CustomBuild Include="MainWin.qrc">
@@ -67,15 +79,6 @@
     <Filter Include="Sources">
       <UniqueIdentifier>{99f883a2-cbb5-455b-810b-acb9e3e1f198}</UniqueIdentifier>
     </Filter>
-    <Filter Include="_moc">
-      <UniqueIdentifier>{d2be7468-c870-4aec-9979-9d9ff8309592}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="_moc\Release">
-      <UniqueIdentifier>{6fbb2f6d-8fba-4eb3-9d49-3772b46898da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="_moc\Debug">
-      <UniqueIdentifier>{5be7ac60-9db4-4bbc-92a0-c013c0fa0661}</UniqueIdentifier>
-    </Filter>
     <Filter Include="_rcc">
       <UniqueIdentifier>{3122feaf-4aa9-4d32-8fc2-584f49684ea5}</UniqueIdentifier>
     </Filter>
@@ -88,6 +91,9 @@
       <UniqueIdentifier>{53b9ced6-81d6-4920-abfe-c9d2d372bbd7}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{816f0a5d-a3de-4c61-9d95-532c0b9cad1f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
