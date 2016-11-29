@@ -22,9 +22,6 @@ public:
 
 	std::shared_ptr<Cell> get_cell(size_t _x, size_t _y) const;
 
-	void select_cell(size_t _x, size_t _y);
-	void deselect_cell(size_t _x, size_t _y);
-
 private:
 	QVector<QVector<std::shared_ptr<Cell> > > cells;
 	QVector<QVector<std::shared_ptr<Selection> > > selections;

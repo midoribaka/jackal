@@ -9,19 +9,19 @@
 class RoundedRect : public QGraphicsObject
 {
 public:
-	RoundedRect(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, QGraphicsItem* _parent = 0, const QColor& _color = QColor(0, 0, 0, 0)) : QGraphicsObject(_parent), draw_rect(_draw_rect), corner_radius(_radius), color(_color)
+	RoundedRect() : draw_rect(QRect()), corner_radius(0), color(QColor(0,0,0,0))
 	{
+	}
+
+	void set_color(const QColor& _color)
+	{
+		color = _color;
 	}
 
 	void set_geometry(const QRectF& _draw_rect, size_t _radius = 0)
 	{
 		draw_rect = _draw_rect;
 		corner_radius = _radius;
-	}
-
-	void set_parent(QGraphicsItem* _parent = 0)
-	{
-		QGraphicsItem::setParentItem(_parent);
 	}
 
 	void set_image(const QPixmap& _pixmap)
@@ -57,7 +57,4 @@ protected:
 	QRectF draw_rect;
 	size_t corner_radius;
 	QColor color;
-
-signals:
-	void on_mouse_click();
 };

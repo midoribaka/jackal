@@ -35,7 +35,7 @@ MainWin::MainWin(QWidget *_parent) : QMainWindow(_parent)
 	main_layout->addWidget(some_right);
 
 
-	view_widget->setScene(new GameScene(active_screen_h));
+	view_widget->setScene(new GameScene(active_screen_h, view_widget));
 	view_widget->setRenderHints(QPainter::Antialiasing| QPainter::SmoothPixmapTransform| QPainter::TextAntialiasing);
 
 	main_widget->setLayout(main_layout);

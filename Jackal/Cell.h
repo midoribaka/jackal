@@ -2,26 +2,22 @@
 
 #include "RoundedRect.h"
 
-#include <qmouseevent>
+#include <random>
+
 #include <QGraphicsRotation>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include <QSequentialAnimationGroup>
-
 #include <QStateMachine>
+#include <QMouseEvent>
+#include <QGraphicsSceneMouseEvent>
 #include <QMouseEventTransition>
 #include <QSignalTransition>
-#include <QGraphicsSceneMouseEvent>
-#include <QColor>
-
-#include <random>
-
-#include <QTimer>
 
 class Selection : public RoundedRect
 {
 public:
-	Selection(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0, const QColor& _color = QColor(0, 150, 0, 100)) : RoundedRect(_draw_rect, _radius, _parent, _color)
+	Selection()
 	{
 		setZValue(1.5);
 	}
@@ -44,8 +40,11 @@ public:
 
 class Cell : public RoundedRect
 {
+	Q_OBJECT
+	Q_PROPERTY(qreal zValue READ zValue WRITE setZValue)
+
 public:
-	Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : RoundedRect(_draw_rect, _radius, _parent), m_actions(nullptr)
+	Cell() : m_actions(nullptr)
 	{
 		setZValue(1);
 	}
@@ -61,27 +60,36 @@ public:
 		return br.translated(-br.width() / 2, -br.height() / 2);
 	}
 
-	QStateMachine* get_actions()
+	QStateMachine* get_actions()	//todo make abstract
 	{
 		return m_actions;
 	}
 
-	void set_selected(bool _arg)
+	virtual void set_front_side_image(const QPixmap& _image)
 	{
-
+		front_side_image = _image;
 	}
+
+	virtual void setup(QObject* _obj_parent) = 0;
 
 protected:
 	QStateMachine* m_actions;
+	QPixmap front_side_image;
 };
 
 //
 class StaticCell : public Cell
 {
 public:
-	StaticCell(const QRectF& _draw_rect, size_t _radius = 0, RoundedRect* _parent = 0) : Cell(_draw_rect, _radius, _parent)
+	StaticCell()
 	{
-		set_image(QPixmap("./Resources/cell_img/cell_sea.png"));
+		front_side_image = QPixmap("./Resources/cell_img/cell_sea.png");
+	}
+
+	void setup(QObject* _obj_parent) override
+	{
+		setParent(_obj_parent);
+		set_image(front_side_image);
 	}
 };
 
@@ -89,8 +97,13 @@ public:
 class FlippableCell : public Cell
 {
 public:
-	FlippableCell(const QRectF _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : Cell(_draw_rect, _radius, _parent), back_side_image("./Resources/cell_img/cell_back.png")
+	FlippableCell() : back_side_image("./Resources/cell_img/cell_back.png")
 	{
+	}
+
+	void setup(QObject* _obj_parent) override
+	{
+		setParent(_obj_parent);
 		set_image(back_side_image);
 
 		setAcceptHoverEvents(true);
@@ -137,81 +150,57 @@ public:
 		smooth_scale_y->setDuration(1000);
 		smooth_scale_y->setEasingCurve(QEasingCurve::InOutQuad);
 
-		flip_animation = new QParallelAnimationGroup(this);
+		QParallelAnimationGroup* flip_animation = new QParallelAnimationGroup(this);
 		flip_animation->addAnimation(smooth_rotation);
 		flip_animation->addAnimation(smooth_scale_x);
 		flip_animation->addAnimation(smooth_scale_y);
 
-		//State Machine
-		/*	see_back_side -> (mousePressEvent) -> see_front_side
-		see_front_side -> (reset signal by scene) -> see_back_side	*/
-
-		state_machine = new QStateMachine(this);
-
-		QState* see_back_side = new QState(state_machine);
-		QState* see_front_side = new QState(state_machine);
-
-		QObject::connect(see_back_side, &QState::exited, [this]()
-		{
-			setZValue(2);
-			flip_animation->start();
-		});
-
-		QObject::connect(see_front_side, &QState::exited, [this]()
-		{
-			setZValue(2);
-			flip_animation->start();
-		});
-
-		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, see_back_side);
-		mouse_press->setTargetState(see_front_side);
-
-		QSignalTransition *reset_signal = see_front_side->addTransition(parent(), SIGNAL(reset_field()), see_back_side);
-
+		m_state_machine = new QStateMachine(this);
+		QState* see_back_side = new QState(m_state_machine);
+		QState* see_front_side = new QState(m_state_machine);
 
 		//half way flip
-		QObject::connect(smooth_first_half_rotation, &QPropertyAnimation::finished, [this, see_back_side, see_front_side]()
+		QObject::connect(smooth_first_half_rotation, &QPropertyAnimation::finished, [this, see_front_side, see_back_side]()
 		{
 			//Q_PROPERTY may will be better
 
-			if (state_machine->configuration().contains(see_front_side))
+			if (m_state_machine->configuration().contains(see_front_side))
 				set_image(front_side_image);
-			else if (state_machine->configuration().contains(see_back_side))
+			else if (m_state_machine->configuration().contains(see_back_side))
 				set_image(back_side_image);
 		});
 
-		//finish
-		QObject::connect(flip_animation, &QParallelAnimationGroup::finished, [this]() 
-		{
-			//при анимации ячейки происходит изменение z value (см mousePressEvent), иначе правая от неё ячейка будет её частично перекрывать
-			//это возврат к значению по умолчанию по окончании анимации
-			setZValue(1);	
-		});
+		//State Machine
+		/*	
+		see_back_side -> (mousePressEvent) -> see_front_side
+		see_front_side -> (reset_field signal by gridmap) -> see_back_side	
+		*/
 
-		state_machine->setInitialState(see_back_side);
-		state_machine->start();
+		see_front_side->assignProperty(this, "zValue", 2.0);	//установить при переходе в это состояние
+		see_back_side->assignProperty(this, "zValue", 1.0);
+
+		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, see_back_side);
+		mouse_press->setTargetState(see_front_side);
+		mouse_press->addAnimation(flip_animation);		//!!! todo no ownership!
+
+		QSignalTransition* reset_signal = see_front_side->addTransition(parent(), SIGNAL(reset_field()), see_back_side);
+		reset_signal->addAnimation(flip_animation);
+
+		m_state_machine->setInitialState(see_back_side);
+		m_state_machine->start();
 	}
 
 protected:
-	virtual void set_front_side_image(const QPixmap& _image)
-	{
-		front_side_image = _image;
-	}
-
 	void mousePressEvent(QGraphicsSceneMouseEvent *_event) override
 	{
 		auto wrapped = new QStateMachine::WrappedEvent(this, new QMouseEvent(QEvent::MouseButtonPress, _event->pos(), _event->button(), _event->buttons(), _event->modifiers()));
-		state_machine->postEvent(wrapped);
+		m_state_machine->postEvent(wrapped);	//will be deleted inside
 		Cell::mousePressEvent(_event);
 	}
-
-	QPixmap front_side_image;
-	QPixmap back_side_image;
-
-	//current image is RoundedRect::image
+	
 private:
-	QParallelAnimationGroup *flip_animation;
-	QStateMachine* state_machine;
+	QPixmap back_side_image;	//current image is RoundedRect::image
+	QStateMachine* m_state_machine;
 };
 
 //
@@ -219,7 +208,7 @@ private:
 class EmptyCell : public FlippableCell
 {
 public:
-	EmptyCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	EmptyCell()
 	{
 		//выбираем один из четырёх
 		std::random_device rd;
@@ -227,9 +216,6 @@ public:
 		std::uniform_int_distribution<> dis(1, 4);		
 		set_front_side_image(QPixmap("./Resources/cell_img/empty-"+ QString::number(dis(gen))+".png"));
 	}
-
-private:
-//	std::map<>
 };
 
 //
@@ -247,7 +233,7 @@ class RandomDirectionCell : public FlippableCell
 	const int angle_choice[4] = { NORD, OST, SOUTH, WEST};
 
 public:
-	RandomDirectionCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	RandomDirectionCell()
 	{
 		//выбираем случайное направление
 		std::random_device rd;
@@ -271,9 +257,9 @@ protected:
 class SideArrowCell : public RandomDirectionCell
 {
 public:
-	SideArrowCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : RandomDirectionCell(_draw_rect, _radius, _parent)
+	SideArrowCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/arrow-1.png"));
+		front_side_image = QPixmap("./Resources/cell_img/arrow-1.png");
 	}
 };
 
@@ -282,9 +268,9 @@ public:
 class DiagonalArrowCell : public RandomDirectionCell
 {
 public:
-	DiagonalArrowCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : RandomDirectionCell(_draw_rect, _radius, _parent)
+	DiagonalArrowCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/arrow-2.png"));
+		front_side_image = QPixmap("./Resources/cell_img/arrow-2.png");
 	}
 };
 
@@ -293,9 +279,9 @@ public:
 class DoubleSideArrowCell : public RandomDirectionCell
 {
 public:
-	DoubleSideArrowCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : RandomDirectionCell(_draw_rect, _radius, _parent)
+	DoubleSideArrowCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/arrow-3.png"));
+		front_side_image = QPixmap("./Resources/cell_img/arrow-3.png");
 	}
 };
 
@@ -304,9 +290,9 @@ public:
 class DoubleDiagonalArrowCell : public RandomDirectionCell
 {
 public:
-	DoubleDiagonalArrowCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : RandomDirectionCell(_draw_rect, _radius, _parent)
+	DoubleDiagonalArrowCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/arrow-4.png"));
+		front_side_image = QPixmap("./Resources/cell_img/arrow-4.png");
 	}
 };
 
@@ -315,9 +301,9 @@ public:
 class TripleArrowCell : public RandomDirectionCell
 {
 public:
-	TripleArrowCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : RandomDirectionCell(_draw_rect, _radius, _parent)
+	TripleArrowCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/arrow-5.png"));
+		front_side_image = QPixmap("./Resources/cell_img/arrow-5.png");
 	}
 };
 
@@ -326,9 +312,9 @@ public:
 class QuadSideArrowCell : public RandomDirectionCell
 {
 public:
-	QuadSideArrowCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : RandomDirectionCell(_draw_rect, _radius, _parent)
+	QuadSideArrowCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/arrow-6.png"));
+		front_side_image = QPixmap("./Resources/cell_img/arrow-6.png");
 	}
 };
 
@@ -337,9 +323,9 @@ public:
 class QuadDiagonalArrowCell : public RandomDirectionCell
 {
 public:
-	QuadDiagonalArrowCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : RandomDirectionCell(_draw_rect, _radius, _parent)
+	QuadDiagonalArrowCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/arrow-7.png"));
+		front_side_image = QPixmap("./Resources/cell_img/arrow-7.png");
 	}
 };
 
@@ -348,9 +334,9 @@ public:
 class HorseCell : public FlippableCell
 {
 public:
-	HorseCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	HorseCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/horse.png"));
+		front_side_image = QPixmap("./Resources/cell_img/horse.png");
 	}
 };
 
@@ -359,9 +345,9 @@ public:
 class Spinning2Cell : public FlippableCell
 {
 public:
-	Spinning2Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	Spinning2Cell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/rotate-2.png"));
+		front_side_image = QPixmap("./Resources/cell_img/rotate-2.png");
 	}
 };
 
@@ -370,9 +356,9 @@ public:
 class Spinning3Cell : public FlippableCell
 {
 public:
-	Spinning3Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	Spinning3Cell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/rotate-3.png"));
+		front_side_image = QPixmap("./Resources/cell_img/rotate-3.png");
 	}
 };
 
@@ -381,9 +367,9 @@ public:
 class Spinning4Cell : public FlippableCell
 {
 public:
-	Spinning4Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	Spinning4Cell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/rotate-4.png"));
+		front_side_image = QPixmap("./Resources/cell_img/rotate-4.png");
 	}
 };
 
@@ -392,9 +378,9 @@ public:
 class Spinning5Cell : public FlippableCell
 {
 public:
-	Spinning5Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	Spinning5Cell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/rotate-5.png"));
+		front_side_image = QPixmap("./Resources/cell_img/rotate-5.png");
 	}
 };
 
@@ -403,9 +389,9 @@ public:
 class IceCell : public FlippableCell
 {
 public:
-	IceCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	IceCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/ice.png"));
+		front_side_image = QPixmap("./Resources/cell_img/ice.png");
 	}
 };
 
@@ -414,9 +400,9 @@ public:
 class TrapCell : public FlippableCell
 {
 public:
-	TrapCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	TrapCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/pitfall.png"));
+		front_side_image = QPixmap("./Resources/cell_img/pitfall.png");
 	}
 };
 
@@ -425,9 +411,9 @@ public:
 class CanonCell : public RandomDirectionCell
 {
 public:
-	CanonCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : RandomDirectionCell(_draw_rect, _radius, _parent)
+	CanonCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/gun.png"));
+		front_side_image = QPixmap("./Resources/cell_img/gun.png");
 	}
 };
 
@@ -436,9 +422,9 @@ public:
 class FortressCell : public FlippableCell
 {
 public:
-	FortressCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	FortressCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/fort.png"));
+		front_side_image = QPixmap("./Resources/cell_img/fort.png");
 	}
 };
 
@@ -447,9 +433,9 @@ public:
 class GirlFortressCell : public FlippableCell
 {
 public:
-	GirlFortressCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	GirlFortressCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/fort-w-aborigine.png"));
+		front_side_image = QPixmap("./Resources/cell_img/fort-w-aborigine.png");
 	}
 };
 
@@ -458,9 +444,9 @@ public:
 class RumBarrelCell : public FlippableCell
 {
 public:
-	RumBarrelCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	RumBarrelCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/keg-of-rum.png"));
+		front_side_image = QPixmap("./Resources/cell_img/keg-of-rum.png");
 	}
 };
 
@@ -469,9 +455,9 @@ public:
 class CrocodileCell : public FlippableCell
 {
 public:
-	CrocodileCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	CrocodileCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/crocodile.png"));
+		front_side_image = QPixmap("./Resources/cell_img/crocodile.png");
 	}
 };
 
@@ -480,9 +466,9 @@ public:
 class OgreCell : public FlippableCell
 {
 public:
-	OgreCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	OgreCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/cannibal.png"));
+		front_side_image = QPixmap("./Resources/cell_img/cannibal.png");
 	}
 };
 
@@ -491,9 +477,9 @@ public:
 class BalloonCell : public FlippableCell
 {
 public:
-	BalloonCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	BalloonCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/balloon.png"));
+		front_side_image = QPixmap("./Resources/cell_img/balloon.png");
 	}
 };
 
@@ -502,9 +488,9 @@ public:
 class PlaneCell : public FlippableCell
 {
 public:
-	PlaneCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	PlaneCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/airplane.png"));
+		front_side_image = QPixmap("./Resources/cell_img/airplane.png");
 	}
 };
 
@@ -513,9 +499,9 @@ public:
 class Coins1Cell : public FlippableCell
 {
 public:
-	Coins1Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	Coins1Cell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/coins-1.png"));
+		front_side_image = QPixmap("./Resources/cell_img/coins-1.png");
 	}
 };
 
@@ -524,9 +510,9 @@ public:
 class Coins2Cell : public FlippableCell
 {
 public:
-	Coins2Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	Coins2Cell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/coins-2.png"));
+		front_side_image = QPixmap("./Resources/cell_img/coins-2.png");
 	}
 };
 
@@ -535,9 +521,9 @@ public:
 class Coins3Cell : public FlippableCell
 {
 public:
-	Coins3Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	Coins3Cell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/coins-3.png"));
+		front_side_image = QPixmap("./Resources/cell_img/coins-3.png");
 	}
 };
 
@@ -546,9 +532,9 @@ public:
 class Coins4Cell : public FlippableCell
 {
 public:
-	Coins4Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	Coins4Cell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/coins-4.png"));
+		front_side_image = QPixmap("./Resources/cell_img/coins-4.png");
 	}
 };
 
@@ -557,9 +543,9 @@ public:
 class Coins5Cell : public FlippableCell
 {
 public:
-	Coins5Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	Coins5Cell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/coins-5.png"));
+		front_side_image = QPixmap("./Resources/cell_img/coins-5.png");
 	}
 };
 
@@ -568,9 +554,9 @@ public:
 class TreasureCell : public FlippableCell
 {
 public:
-	TreasureCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	TreasureCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/treasure.png"));
+		front_side_image = QPixmap("./Resources/cell_img/treasure.png");
 	}
 };
 
@@ -579,9 +565,9 @@ public:
 class CarambaCell : public FlippableCell
 {
 public:
-	CarambaCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	CarambaCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/caramba.png"));
+		front_side_image = QPixmap("./Resources/cell_img/caramba.png");
 	}
 };
 
@@ -590,9 +576,9 @@ public:
 class LightHouseCell : public FlippableCell
 {
 public:
-	LightHouseCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	LightHouseCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/lighthouse.png"));
+		front_side_image = QPixmap("./Resources/cell_img/lighthouse.png");
 	}
 };
 
@@ -601,9 +587,9 @@ public:
 class BenGunnCell : public FlippableCell
 {
 public:
-	BenGunnCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	BenGunnCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/ben-gunn.png"));
+		front_side_image = QPixmap("./Resources/cell_img/ben-gunn.png");
 	}
 };
 
@@ -612,9 +598,9 @@ public:
 class MissionaryCell : public FlippableCell
 {
 public:
-	MissionaryCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	MissionaryCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/missionary.png"));
+		front_side_image = QPixmap("./Resources/cell_img/missionary.png");
 	}
 };
 
@@ -623,9 +609,9 @@ public:
 class FridayCell : public FlippableCell
 {
 public:
-	FridayCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	FridayCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/friday.png"));
+		front_side_image = QPixmap("./Resources/cell_img/friday.png");
 	}
 };
 
@@ -634,9 +620,9 @@ public:
 class Rum1Cell : public FlippableCell
 {
 public:
-	Rum1Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	Rum1Cell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/bottles-of-rum-1.png"));
+		front_side_image = QPixmap("./Resources/cell_img/bottles-of-rum-1.png");
 	}
 };
 
@@ -645,9 +631,9 @@ public:
 class Rum2Cell : public FlippableCell
 {
 public:
-	Rum2Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	Rum2Cell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/bottles-of-rum-2.png"));
+		front_side_image = QPixmap("./Resources/cell_img/bottles-of-rum-2.png");
 	}
 };
 
@@ -656,9 +642,9 @@ public:
 class Rum3Cell : public FlippableCell
 {
 public:
-	Rum3Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	Rum3Cell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/bottles-of-rum-3.png"));
+		front_side_image = QPixmap("./Resources/cell_img/bottles-of-rum-3.png");
 	}
 };
 
@@ -667,9 +653,9 @@ public:
 class CaveCell : public FlippableCell
 {
 public:
-	CaveCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	CaveCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/cave.png"));
+		front_side_image = QPixmap("./Resources/cell_img/cave.png");
 	}
 };
 
@@ -678,9 +664,9 @@ public:
 class EarthquakeCell : public FlippableCell
 {
 public:
-	EarthquakeCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	EarthquakeCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/earthquake.png"));
+		front_side_image = QPixmap("./Resources/cell_img/earthquake.png");
 	}
 };
 
@@ -689,9 +675,9 @@ public:
 class JungleCell : public FlippableCell
 {
 public:
-	JungleCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	JungleCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/jungle.png"));
+		front_side_image = QPixmap("./Resources/cell_img/jungle.png");
 	}
 };
 
@@ -700,8 +686,8 @@ public:
 class GrassCell : public FlippableCell
 {
 public:
-	GrassCell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : FlippableCell(_draw_rect, _radius, _parent)
+	GrassCell()
 	{
-		set_front_side_image(QPixmap("./Resources/cell_img/grass.png"));
+		front_side_image = QPixmap("./Resources/cell_img/grass.png");
 	}
 };

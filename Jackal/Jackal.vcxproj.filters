@@ -22,11 +22,11 @@
     <ClCompile Include="GeneratedFiles\qrc_MainWin.cpp">
       <Filter>_rcc</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Cell.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Cell.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Deck.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -56,6 +56,9 @@
     <CustomBuild Include="MainWin.qrc">
       <Filter>_rcc</Filter>
     </CustomBuild>
+    <CustomBuild Include="Cell.h">
+      <Filter>Headers</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
@@ -75,6 +78,16 @@
     </Filter>
     <Filter Include="_rcc">
       <UniqueIdentifier>{3122feaf-4aa9-4d32-8fc2-584f49684ea5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{53b9ced6-81d6-4920-abfe-c9d2d372bbd7}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
     </Filter>
   </ItemGroup>
   <ItemGroup>

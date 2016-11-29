@@ -2,10 +2,6 @@
 
 #include "Cell.h"
 
-#include <QApplication>
-#include <QDrag>
-#include <QMimeData>
-
 class PlayItem : public RoundedRect
 {
 public:
@@ -17,7 +13,7 @@ public:
 		BLACK
 	};
 
-	PlayItem(COLOR _color, const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : RoundedRect(_draw_rect, _radius, _parent)
+	PlayItem(COLOR _color, const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0)
 	{
 		switch (_color)
 		{
@@ -26,6 +22,21 @@ public:
 		case COLOR::BLUE: break;
 		case COLOR::BLACK: break;
 		}
+
+		//StateMachine
+		/*
+		idle_state-> ->choosed_state
+		choosed_state-> ->idle_state
+		choosed_state-> ->moving_state
+		moving_state-> ->idle_state
+		*/
+
+		QStateMachine* state_machine = new QStateMachine();
+
+		QState* idle_state = new QState(state_machine);
+		QState* choosed_state = new QState(state_machine);
+		QState* moving_state = new QState(state_machine);
+
 	}
 
 	virtual QRectF boundingRect() const override
