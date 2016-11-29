@@ -2,25 +2,38 @@
 
 #include <QVector>
 
+#include <memory>
+
 #include "RoundedRect.h"
 #include "Cell.h"
 
 class GridMap : public RoundedRect
 {
+	Q_OBJECT
+
 	const size_t rows_num = 13;
-	const size_t cell_corner_radius = 5;
+	const size_t cell_corner_radius = 0;	//todo не работает
 	const size_t spacer_size = 4;
-	const size_t padding_size = 10;
+
+	size_t padding_size = 2;	//адаптивный размер полей сетки под разрешение экрана
 
 public:
 	GridMap(size_t _px_size, size_t _corner_radius, QGraphicsItem* _parent = 0);
 
-	Cell* get_cell(size_t _x, size_t _y) const;
+	std::shared_ptr<Cell> get_cell(size_t _x, size_t _y) const;
+
+	void select_cell(size_t _x, size_t _y);
+	void deselect_cell(size_t _x, size_t _y);
 
 private:
-	QVector<QVector<Cell*> > cells;
+	QVector<QVector<std::shared_ptr<Cell> > > cells;
+	QVector<QVector<std::shared_ptr<Selection> > > selections;
 
 	QPointF get_cell_center(size_t _x, size_t _y) const;
 
 	size_t cell_side_size;
+
+
+signals:
+	void reset_field();
 };

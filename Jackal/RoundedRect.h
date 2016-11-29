@@ -1,22 +1,22 @@
 #pragma once
-#include <QGraphicsItem>
+#include <QGraphicsObject>
 #include <QFile>
 #include <QLayout>
 #include <QPixmap>
 #include <QRect>
 #include <QPainter>
 
-class RoundedRect : public QGraphicsItem
+class RoundedRect : public QGraphicsObject
 {
 public:
-	RoundedRect(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, QGraphicsItem* _parent = 0) : QGraphicsItem(_parent), draw_rect(_draw_rect)
+	RoundedRect(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, QGraphicsItem* _parent = 0, const QColor& _color = QColor(0, 0, 0, 0)) : QGraphicsObject(_parent), draw_rect(_draw_rect), corner_radius(_radius), color(_color)
 	{
 	}
 
 	void set_geometry(const QRectF& _draw_rect, size_t _radius = 0)
 	{
 		draw_rect = _draw_rect;
-		radius = _radius;
+		corner_radius = _radius;
 	}
 
 	void set_parent(QGraphicsItem* _parent = 0)
@@ -32,8 +32,9 @@ public:
 
 	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override
 	{
-		_painter->setBrush(QColor(0, 0, 0, 64));					//transparent background
-		_painter->drawRoundRect(boundingRect(), radius, radius);
+		_painter->setBrush(color);
+		_painter->setPen(Qt::NoPen);	// no border
+		_painter->drawRoundRect(boundingRect(), corner_radius, corner_radius);
 
 		if (!image.isNull()) 
 		{
@@ -54,5 +55,9 @@ public:
 protected:
 	QPixmap image;
 	QRectF draw_rect;
-	size_t radius;
+	size_t corner_radius;
+	QColor color;
+
+signals:
+	void on_mouse_click();
 };

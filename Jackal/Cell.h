@@ -2,18 +2,52 @@
 
 #include "RoundedRect.h"
 
+#include <qmouseevent>
 #include <QGraphicsRotation>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include <QSequentialAnimationGroup>
 
+#include <QStateMachine>
+#include <QMouseEventTransition>
+#include <QSignalTransition>
+#include <QGraphicsSceneMouseEvent>
+#include <QColor>
+
 #include <random>
+
+#include <QTimer>
+
+class Selection : public RoundedRect
+{
+public:
+	Selection(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0, const QColor& _color = QColor(0, 150, 0, 100)) : RoundedRect(_draw_rect, _radius, _parent, _color)
+	{
+		setZValue(1.5);
+	}
+
+	virtual QRectF boundingRect() const override
+	{
+		//origin at center
+		QRectF br = RoundedRect::boundingRect();
+		return br.translated(-br.width() / 2, -br.height() / 2);
+	}
+
+	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override
+	{
+		QPen pen;
+		pen.setWidth(1);
+		_painter->setPen(pen);
+		_painter->drawRoundRect(boundingRect(), corner_radius, corner_radius);
+	}
+};
 
 class Cell : public RoundedRect
 {
 public:
-	Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : RoundedRect(_draw_rect, _radius, _parent), draw_rect(_draw_rect), corner_radius(_radius)
+	Cell(const QRectF& _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : RoundedRect(_draw_rect, _radius, _parent), m_actions(nullptr)
 	{
+		setZValue(1);
 	}
 
 	virtual ~Cell()
@@ -26,9 +60,19 @@ public:
 		QRectF br = RoundedRect::boundingRect();
 		return br.translated(-br.width() / 2, -br.height() / 2);
 	}
+
+	QStateMachine* get_actions()
+	{
+		return m_actions;
+	}
+
+	void set_selected(bool _arg)
+	{
+
+	}
+
 protected:
-	QRectF draw_rect;
-	size_t corner_radius;
+	QStateMachine* m_actions;
 };
 
 //
@@ -42,13 +86,16 @@ public:
 };
 
 //
-class FlippableCell : public Cell, public QObject
+class FlippableCell : public Cell
 {
 public:
 	FlippableCell(const QRectF _draw_rect = QRectF(), size_t _radius = 0, RoundedRect* _parent = 0) : Cell(_draw_rect, _radius, _parent), back_side_image("./Resources/cell_img/cell_back.png")
 	{
 		set_image(back_side_image);
 
+		setAcceptHoverEvents(true);
+
+		//Animation
 		QGraphicsRotation *flip = new QGraphicsRotation();
 		flip->setAxis(Qt::YAxis);
 
@@ -75,18 +122,19 @@ public:
 		smooth_rotation->addAnimation(smooth_first_half_rotation);
 		smooth_rotation->addAnimation(smooth_second_half_rotation);
 
+		// turn then scale
 		QPropertyAnimation *smooth_scale_x = new QPropertyAnimation(scale, "xScale");		//свойство добавляется при помощи QGraphicsScale
 		QPropertyAnimation *smooth_scale_y = new QPropertyAnimation(scale, "yScale");		//свойство добавляется при помощи QGraphicsScale
 		smooth_scale_x->setKeyValueAt(0, qvariant_cast<qreal>(1.0));
-		smooth_scale_x->setKeyValueAt(0.5, qvariant_cast<qreal>(1.5));
+		smooth_scale_x->setKeyValueAt(0.5, qvariant_cast<qreal>(1.3));
 		smooth_scale_x->setKeyValueAt(1, qvariant_cast<qreal>(1.0));
-		smooth_scale_x->setDuration(500);
+		smooth_scale_x->setDuration(1000);
 		smooth_scale_x->setEasingCurve(QEasingCurve::InOutQuad);
 
 		smooth_scale_y->setKeyValueAt(0, qvariant_cast<qreal>(1.0));
 		smooth_scale_y->setKeyValueAt(0.5, qvariant_cast<qreal>(1.3));
 		smooth_scale_y->setKeyValueAt(1, qvariant_cast<qreal>(1.0));
-		smooth_scale_y->setDuration(500);
+		smooth_scale_y->setDuration(1000);
 		smooth_scale_y->setEasingCurve(QEasingCurve::InOutQuad);
 
 		flip_animation = new QParallelAnimationGroup(this);
@@ -94,10 +142,42 @@ public:
 		flip_animation->addAnimation(smooth_scale_x);
 		flip_animation->addAnimation(smooth_scale_y);
 
-		//half way flip
-		QObject::connect(smooth_first_half_rotation, &QPropertyAnimation::finished, [this]()
+		//State Machine
+		/*	see_back_side -> (mousePressEvent) -> see_front_side
+		see_front_side -> (reset signal by scene) -> see_back_side	*/
+
+		state_machine = new QStateMachine(this);
+
+		QState* see_back_side = new QState(state_machine);
+		QState* see_front_side = new QState(state_machine);
+
+		QObject::connect(see_back_side, &QState::exited, [this]()
 		{
-			set_image(front_side_image);
+			setZValue(2);
+			flip_animation->start();
+		});
+
+		QObject::connect(see_front_side, &QState::exited, [this]()
+		{
+			setZValue(2);
+			flip_animation->start();
+		});
+
+		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, see_back_side);
+		mouse_press->setTargetState(see_front_side);
+
+		QSignalTransition *reset_signal = see_front_side->addTransition(parent(), SIGNAL(reset_field()), see_back_side);
+
+
+		//half way flip
+		QObject::connect(smooth_first_half_rotation, &QPropertyAnimation::finished, [this, see_back_side, see_front_side]()
+		{
+			//Q_PROPERTY may will be better
+
+			if (state_machine->configuration().contains(see_front_side))
+				set_image(front_side_image);
+			else if (state_machine->configuration().contains(see_back_side))
+				set_image(back_side_image);
 		});
 
 		//finish
@@ -105,8 +185,11 @@ public:
 		{
 			//при анимации ячейки происходит изменение z value (см mousePressEvent), иначе правая от неё ячейка будет её частично перекрывать
 			//это возврат к значению по умолчанию по окончании анимации
-			setZValue(0);	
+			setZValue(1);	
 		});
+
+		state_machine->setInitialState(see_back_side);
+		state_machine->start();
 	}
 
 protected:
@@ -117,8 +200,8 @@ protected:
 
 	void mousePressEvent(QGraphicsSceneMouseEvent *_event) override
 	{
-		setZValue(1);
-		flip_animation->start();
+		auto wrapped = new QStateMachine::WrappedEvent(this, new QMouseEvent(QEvent::MouseButtonPress, _event->pos(), _event->button(), _event->buttons(), _event->modifiers()));
+		state_machine->postEvent(wrapped);
 		Cell::mousePressEvent(_event);
 	}
 
@@ -126,9 +209,9 @@ protected:
 	QPixmap back_side_image;
 
 	//current image is RoundedRect::image
-
 private:
 	QParallelAnimationGroup *flip_animation;
+	QStateMachine* state_machine;
 };
 
 //
@@ -144,6 +227,9 @@ public:
 		std::uniform_int_distribution<> dis(1, 4);		
 		set_front_side_image(QPixmap("./Resources/cell_img/empty-"+ QString::number(dis(gen))+".png"));
 	}
+
+private:
+//	std::map<>
 };
 
 //

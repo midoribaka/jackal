@@ -7,11 +7,4 @@ public:
 	{
 
 	}
-
-	void reset()
-	{
-
-	}
-
-
 };
