@@ -176,8 +176,8 @@ public:
 		see_front_side -> (reset_field signal by gridmap) -> see_back_side	
 		*/
 
-		see_front_side->assignProperty(this, "zValue", 2.0);	//установить при переходе в это состояние
-		see_back_side->assignProperty(this, "zValue", 1.0);
+		see_front_side->assignProperty(this, "zValue", zValue()+1);	//установить при переходе в это состояние
+		see_back_side->assignProperty(this, "zValue", zValue()-1);
 
 		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, see_back_side);
 		mouse_press->setTargetState(see_front_side);

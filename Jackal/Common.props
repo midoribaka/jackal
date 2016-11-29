@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(BOOST_DIR);$(QT_DIR)/include;$(QT_DIR)/include/QtNetwork;$(QT_DIR)/include/QtCore;$(QT_DIR)/include/QtANGLE;$(QT_DIR)/include/QtGui;$(QT_DIR)/include/QtSvg;$(QT_DIR)/include/QtWidgets;$(QWT_DIR)/include;$(SolutionDir)/Common;$(ProjectDir)/headers;$(ProjectDir)/GeneratedFiles</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SolutionDir)/$(Platform)/$(Configuration);$(BOOST_DIR)/stage/lib;$(QT_DIR)/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>shell32.lib</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <CustomBuild>
+      <Message>
+      </Message>
+      <Outputs>
+      </Outputs>
+      <AdditionalInputs>
+      </AdditionalInputs>
+    </CustomBuild>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>
