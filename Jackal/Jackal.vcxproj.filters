@@ -37,6 +37,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_MainWin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Selection.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Deck.h">
@@ -46,9 +49,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="GameScene.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayItems.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
@@ -69,6 +69,12 @@
       <Filter>_rcc</Filter>
     </CustomBuild>
     <CustomBuild Include="Cell.h">
+      <Filter>Headers</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PlayItems.h">
+      <Filter>Headers</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Selection.h">
       <Filter>Headers</Filter>
     </CustomBuild>
   </ItemGroup>

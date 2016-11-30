@@ -91,6 +91,7 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_MainWin.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Selection.cpp" />
     <ClCompile Include="GeneratedFiles\qrc_MainWin.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
@@ -126,7 +127,21 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PlayItems.h" />
+    <CustomBuild Include="Selection.h" />
+    <CustomBuild Include="PlayItems.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Outputs>
+    </CustomBuild>
     <ClInclude Include="Player.h" />
     <ClInclude Include="RoundedRect.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

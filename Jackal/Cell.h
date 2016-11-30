@@ -14,29 +14,6 @@
 #include <QMouseEventTransition>
 #include <QSignalTransition>
 
-class Selection : public RoundedRect
-{
-public:
-	Selection()
-	{
-		setZValue(1.5);
-	}
-
-	virtual QRectF boundingRect() const override
-	{
-		//origin at center
-		QRectF br = RoundedRect::boundingRect();
-		return br.translated(-br.width() / 2, -br.height() / 2);
-	}
-
-	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override
-	{
-		QPen pen;
-		pen.setWidth(1);
-		_painter->setPen(pen);
-		_painter->drawRoundRect(boundingRect(), corner_radius, corner_radius);
-	}
-};
 
 class Cell : public RoundedRect
 {
@@ -176,8 +153,8 @@ public:
 		see_front_side -> (reset_field signal by gridmap) -> see_back_side	
 		*/
 
-		see_front_side->assignProperty(this, "zValue", 2.0);	//установить при переходе в это состояние
-		see_back_side->assignProperty(this, "zValue", 1.0);
+		see_front_side->assignProperty(this, "zValue", zValue()+1);	//установить при переходе в это состояние
+		see_back_side->assignProperty(this, "zValue", zValue()-1);
 
 		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, see_back_side);
 		mouse_press->setTargetState(see_front_side);

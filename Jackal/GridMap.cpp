@@ -12,7 +12,6 @@ GridMap::GridMap(size_t _px_size, size_t _corner_radius, QGraphicsItem* _parent 
 	RoundedRect::set_geometry(QRectF(QPointF(0, 0), QSizeF(_px_size, _px_size)), _corner_radius);	//todo this must be maked by scene
 
 	cells.resize(rows_num);
-	selections.resize(rows_num);
 
 	size_t s = (_px_size - 2 * padding_size - (rows_num - 1)*spacer_size) / rows_num;	//floor
 	cell_side_size = (s % 2) ? --s : s;	//долой нечётные числа
@@ -25,7 +24,6 @@ GridMap::GridMap(size_t _px_size, size_t _corner_radius, QGraphicsItem* _parent 
 	for (int i = 0; i < rows_num; ++i)
 	{
 		cells[i].resize(rows_num);
-		selections[i].resize(rows_num);
 
 		for (int j = 0; j < rows_num; ++j)
 		{

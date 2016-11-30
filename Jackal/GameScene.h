@@ -15,12 +15,18 @@ public:
 		m_grid_map = new GridMap(_side_size, corner_radius);
 		addItem(m_grid_map);			//owns by QGraphicsScene
 
-		m_chip = new PlayItem(PlayItem::COLOR::RED, QRectF(0, 0, 20, 20));
-		addItem(m_chip);
-		m_chip->setPos(m_grid_map->get_cell(6, 12)->pos());
+		m_ship = new ShipItem(QRectF(0, 0, 40, 40));
+		addItem(m_ship);
+		m_ship->setPos(m_grid_map->get_cell(6, 12)->pos());
+
+		m_pirate = new PirateItem(QRectF(0, 0, 20, 20));
+		addItem(m_pirate);
+		m_pirate->setPos(m_grid_map->get_cell(6, 12)->pos());
 	}
 
 private:
 	GridMap* m_grid_map;
-	PlayItem* m_chip;
+	PirateItem* m_pirate;
+	ShipItem* m_ship;
+
 };
