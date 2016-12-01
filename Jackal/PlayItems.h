@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <QStateMachine>
 #include <QMouseEvent>
 #include <QGraphicsSceneMouseEvent>
@@ -10,6 +12,8 @@
 
 class PlayItem : public RoundedRect
 {
+	Q_OBJECT
+
 public:
 	enum class COLOR
 	{
@@ -45,6 +49,10 @@ public:
 
 protected:
 	std::unique_ptr<Selection> m_selection;
+
+signals:
+	void choosed();
+
 };
 
 class PirateItem : public PlayItem
@@ -71,6 +79,9 @@ public:
 
 		idle_state->assignProperty(m_selection.get(), "visible", false);
 		choosed_state->assignProperty(m_selection.get(), "visible", true);
+
+		QSignalTransition* deselect_signal = choosed_state->addTransition(parent(), SIGNAL(deselect()), idle_state);	//todo add parent
+		QObject::connect(choosed_state, &QState::entered, this, &PlayItem::choosed);	//emit signal to scene to deselect all another items 
 
 		m_state_machine->setInitialState(idle_state);
 		m_state_machine->start();

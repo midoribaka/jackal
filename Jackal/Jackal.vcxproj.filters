@@ -40,15 +40,21 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_Selection.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PlayItems.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PlayItems.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_GameScene.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Deck.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="GameLogic.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="GameScene.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
@@ -75,6 +81,9 @@
       <Filter>Headers</Filter>
     </CustomBuild>
     <CustomBuild Include="Selection.h">
+      <Filter>Headers</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GameScene.h">
       <Filter>Headers</Filter>
     </CustomBuild>
   </ItemGroup>

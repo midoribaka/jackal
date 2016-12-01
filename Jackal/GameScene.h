@@ -7,6 +7,8 @@
 
 class GameScene : public QGraphicsScene
 {
+	Q_OBJECT
+
 	const size_t corner_radius = 0;
 
 public:
@@ -22,11 +24,18 @@ public:
 		m_pirate = new PirateItem(QRectF(0, 0, 20, 20));
 		addItem(m_pirate);
 		m_pirate->setPos(m_grid_map->get_cell(6, 12)->pos());
+
+		QObject::connect(m_pirate, &PlayItem::choosed, [this]()
+		{
+			emit deselect();	//хрень, не будет работать так, думай ещё
+		});
 	}
 
 private:
 	GridMap* m_grid_map;
-	PirateItem* m_pirate;
-	ShipItem* m_ship;
+	PlayItem* m_pirate;
+	PlayItem* m_ship;
 
+signals:
+	void deselect();
 };
