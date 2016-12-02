@@ -23,11 +23,19 @@ public:
 		BLACK
 	};
 
-	PlayItem(COLOR _color, const QRectF& _draw_rect = QRectF())
+	QStateMachine* get_state_machine()
 	{
+		return m_state_machine;
+	}
+
+	PlayItem(QObject* _parent_obj, COLOR _color, const QRectF& _draw_rect = QRectF())
+	{
+		setParent(_parent_obj);
+
 		RoundedRect::set_geometry(_draw_rect, 0);
 
 		m_selection = std::make_unique<Selection>(this);	//must be after set_geometry
+
 
 		switch (_color)
 		{
@@ -37,7 +45,29 @@ public:
 		case COLOR::BLACK: break;
 		}
 
-		
+		//Common StateMachine
+		/*
+		idle_state-> ->choosed_state
+		choosed_state-> ->idle_state
+		choosed_state-> ->moving_state
+		moving_state-> ->idle_state
+		*/
+		m_state_machine = new QStateMachine(this);
+
+		QState* idle_state = new QState(m_state_machine);
+		QState* choosed_state = new QState(m_state_machine);
+		QState* moving_state = new QState(m_state_machine);
+
+		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, idle_state);
+		mouse_press->setTargetState(choosed_state);
+
+		idle_state->assignProperty(m_selection.get(), "visible", false);
+		choosed_state->assignProperty(m_selection.get(), "visible", true);
+
+	//	QSignalTransition* deselect_signal = choosed_state->addTransition(_parent_obj, SIGNAL(deselect_items()), idle_state);	//todo add parent
+		QObject::connect(choosed_state, &QState::entered, this, &PlayItem::choosed);	//emit signal to scene to deselect all another items 
+
+		m_state_machine->setInitialState(idle_state);
 	}
 
 	virtual QRectF boundingRect() const override
@@ -49,43 +79,7 @@ public:
 
 protected:
 	std::unique_ptr<Selection> m_selection;
-
-signals:
-	void choosed();
-
-};
-
-class PirateItem : public PlayItem
-{
-public:
-	PirateItem(const QRectF& _draw_rect = QRectF()) : PlayItem(COLOR::RED, _draw_rect)
-	{
-		//StateMachine
-		/*
-		idle_state-> ->choosed_state
-		choosed_state-> ->idle_state
-		choosed_state-> ->moving_state
-		moving_state-> ->idle_state
-		*/
-
-		m_state_machine = new QStateMachine(this);
-
-		QState* idle_state = new QState(m_state_machine);
-		QState* choosed_state = new QState(m_state_machine);
-		QState* moving_state = new QState(m_state_machine);
-
-		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, idle_state);
-		mouse_press->setTargetState(choosed_state);
-
-		idle_state->assignProperty(m_selection.get(), "visible", false);
-		choosed_state->assignProperty(m_selection.get(), "visible", true);
-
-		QSignalTransition* deselect_signal = choosed_state->addTransition(parent(), SIGNAL(deselect()), idle_state);	//todo add parent
-		QObject::connect(choosed_state, &QState::entered, this, &PlayItem::choosed);	//emit signal to scene to deselect all another items 
-
-		m_state_machine->setInitialState(idle_state);
-		m_state_machine->start();
-	}
+	QStateMachine* m_state_machine;
 
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *_event) override
@@ -96,50 +90,26 @@ protected:
 		_event->accept();	//чтобы эвент не приходил нижнему item-у
 	}
 
+signals:
+	void choosed();
+};
 
-private:
-	QStateMachine* m_state_machine;
+class PirateItem : public PlayItem
+{
+public:
+	PirateItem(QObject* _parent_obj, const QRectF& _draw_rect = QRectF()) : PlayItem(_parent_obj, COLOR::RED, _draw_rect)
+	{
+		m_state_machine->start();
+	}
+
 };
 
 
 class ShipItem : public PlayItem
 {
 public:
-	ShipItem(const QRectF& _draw_rect = QRectF()) : PlayItem(COLOR::BLUE, _draw_rect)
+	ShipItem(QObject* _parent_obj, const QRectF& _draw_rect = QRectF()) : PlayItem(_parent_obj, COLOR::BLUE, _draw_rect)
 	{
-		//StateMachine
-		/*
-		idle_state-> ->choosed_state
-		choosed_state-> ->idle_state
-		choosed_state-> ->moving_state
-		moving_state-> ->idle_state
-		*/
-
-		m_state_machine = new QStateMachine(this);
-
-		QState* idle_state = new QState(m_state_machine);
-		QState* choosed_state = new QState(m_state_machine);
-		QState* moving_state = new QState(m_state_machine);
-
-		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, idle_state);
-		mouse_press->setTargetState(choosed_state);
-
-		idle_state->assignProperty(m_selection.get(), "visible", false);
-		choosed_state->assignProperty(m_selection.get(), "visible", true);
-
-		m_state_machine->setInitialState(idle_state);
 		m_state_machine->start();
 	}
-
-protected:
-	void mousePressEvent(QGraphicsSceneMouseEvent *_event) override
-	{
-		auto wrapped = new QStateMachine::WrappedEvent(this, new QMouseEvent(QEvent::MouseButtonPress, _event->pos(), _event->button(), _event->buttons(), _event->modifiers()));
-		m_state_machine->postEvent(wrapped);	//will be deleted inside
-		RoundedRect::mousePressEvent(_event);
-		_event->accept();	//чтобы эвент не приходил нижнему item-у
-	}
-
-private:
-	QStateMachine* m_state_machine;
 };
