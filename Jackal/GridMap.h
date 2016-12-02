@@ -24,7 +24,6 @@ public:
 
 private:
 	QVector<QVector<std::shared_ptr<Cell> > > cells;
-	QVector<QVector<std::shared_ptr<Selection> > > selections;
 
 	QPointF get_cell_center(size_t _x, size_t _y) const;
 

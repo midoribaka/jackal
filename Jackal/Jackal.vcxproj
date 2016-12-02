@@ -85,12 +85,17 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_Cell.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_GameScene.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_GridMap.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_MainWin.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PlayItems.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Selection.cpp" />
     <ClCompile Include="GeneratedFiles\qrc_MainWin.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
@@ -104,6 +109,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_MainWin.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PlayItems.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GridMap.cpp" />
@@ -126,7 +134,17 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PlayItems.h" />
+    <CustomBuild Include="Selection.h" />
+    <CustomBuild Include="PlayItems.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I$(BOOST_DIR)\." "-I$(QT_DIR)\include" "-I$(QT_DIR)\include\QtNetwork" "-I$(QT_DIR)\include\QtCore" "-I$(QT_DIR)\include\QtANGLE" "-I$(QT_DIR)\include\QtGui" "-I$(QT_DIR)\include\QtSvg" "-I$(QT_DIR)\include\QtWidgets" "-I$(QWT_DIR)\include" "-I$(SolutionDir)\Common" "-I$(ProjectDir)\headers" "-I$(ProjectDir)\GeneratedFiles" "-I$(NOINHERIT)\."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing PlayItems.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I$(BOOST_DIR)\." "-I$(QT_DIR)\include" "-I$(QT_DIR)\include\QtNetwork" "-I$(QT_DIR)\include\QtCore" "-I$(QT_DIR)\include\QtANGLE" "-I$(QT_DIR)\include\QtGui" "-I$(QT_DIR)\include\QtSvg" "-I$(QT_DIR)\include\QtWidgets" "-I$(QWT_DIR)\include" "-I$(SolutionDir)\Common" "-I$(ProjectDir)\headers" "-I$(ProjectDir)\GeneratedFiles" "-I$(NOINHERIT)\."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing PlayItems.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QT_DIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QT_DIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+    </CustomBuild>
     <ClInclude Include="Player.h" />
     <ClInclude Include="RoundedRect.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -145,7 +163,7 @@
     <CustomBuild Include="Cell.h" />
     <ClInclude Include="Deck.h" />
     <ClInclude Include="GameLogic.h" />
-    <ClInclude Include="GameScene.h" />
+    <CustomBuild Include="GameScene.h" />
     <CustomBuild Include="GridMap.h" />
   </ItemGroup>
   <ItemGroup>
