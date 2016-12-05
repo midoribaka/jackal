@@ -10,9 +10,6 @@
     <ClCompile Include="MainWin.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_Cell.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_MainWin.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -27,9 +24,6 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_MainWin.cpp">
       <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_Cell.cpp">
-      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_GridMap.cpp">
       <Filter>Generated Files\Release</Filter>
@@ -49,6 +43,12 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_GameScene.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Cell.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Cell.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Deck.h">
@@ -62,6 +62,12 @@
     </ClInclude>
     <ClInclude Include="RoundedRect.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="PirateItem.h">
+      <Filter>Headers\PlayItems</Filter>
+    </ClInclude>
+    <ClInclude Include="ShipItem.h">
+      <Filter>Headers\PlayItems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -77,14 +83,14 @@
     <CustomBuild Include="Cell.h">
       <Filter>Headers</Filter>
     </CustomBuild>
-    <CustomBuild Include="PlayItems.h">
-      <Filter>Headers</Filter>
-    </CustomBuild>
     <CustomBuild Include="Selection.h">
       <Filter>Headers</Filter>
     </CustomBuild>
     <CustomBuild Include="GameScene.h">
       <Filter>Headers</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PlayItems.h">
+      <Filter>Headers\PlayItems</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +115,9 @@
     </Filter>
     <Filter Include="Generated Files\Release">
       <UniqueIdentifier>{816f0a5d-a3de-4c61-9d95-532c0b9cad1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\PlayItems">
+      <UniqueIdentifier>{d7810e5e-3825-408c-92ff-fe99b158fa27}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

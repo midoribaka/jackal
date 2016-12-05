@@ -27,13 +27,16 @@ GridMap::GridMap(size_t _px_size, size_t _corner_radius, QGraphicsItem* _parent 
 
 		for (int j = 0; j < rows_num; ++j)
 		{
-			if ((i == 0) || (j == 0) || (i == rows_num - 1) || (j == rows_num - 1) ||
-				((i == 1) && (j == 1)) ||
-				((i == 1) && (j == rows_num - 2)) ||
-				((i == rows_num - 2) && (j == 1)) ||
-				((i == rows_num - 2) && (j == rows_num - 2)))
+			if ((i == 0) || (j == 0) || (i == rows_num - 1) || (j == rows_num - 1))
 			{
-				cells[i][j] = std::make_shared<StaticCell>();
+				cells[i][j] = std::make_shared<SeaCell>();
+			}
+			else if	(((i == 1) && (j == 1)) ||
+					((i == 1) && (j == rows_num - 2)) ||
+					((i == rows_num - 2) && (j == 1)) ||
+					((i == rows_num - 2) && (j == rows_num - 2)))
+			{
+				cells[i][j] = std::make_shared<CornerCell>();
 			}
 			else
 			{

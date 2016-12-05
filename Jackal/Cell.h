@@ -3,6 +3,7 @@
 #include "RoundedRect.h"
 
 #include <random>
+#include <memory>
 
 #include <QGraphicsRotation>
 #include <QPropertyAnimation>
@@ -20,10 +21,11 @@ class Cell : public RoundedRect
 	Q_OBJECT
 	Q_PROPERTY(qreal zValue READ zValue WRITE setZValue)
 
+	const double default_z_value = 1;
 public:
-	Cell() : m_actions(nullptr)
+	Cell() : m_mask(MOVES::NONE)
 	{
-		setZValue(1);
+		setZValue(default_z_value);
 	}
 
 	virtual ~Cell()
@@ -37,11 +39,6 @@ public:
 		return br.translated(-br.width() / 2, -br.height() / 2);
 	}
 
-	QStateMachine* get_actions()	//todo make abstract
-	{
-		return m_actions;
-	}
-
 	virtual void set_front_side_image(const QPixmap& _image)
 	{
 		front_side_image = _image;
@@ -49,9 +46,28 @@ public:
 
 	virtual void setup(QObject* _obj_parent) = 0;
 
+	virtual int mask() const
+	{
+		return m_mask;
+	};
+
 protected:
-	QStateMachine* m_actions;
+	enum MOVES
+	{
+		NONE = 0,
+		N = 1,
+		NO = 2,
+		O = 4,
+		SO = 8,
+		S = 16,
+		SW = 32,
+		W = 64,
+		NW = 128
+	};
+
 	QPixmap front_side_image;
+
+	int m_mask;
 };
 
 //
@@ -60,13 +76,36 @@ class StaticCell : public Cell
 public:
 	StaticCell()
 	{
-		front_side_image = QPixmap("./Resources/cell_img/cell_sea.png");
+	}
+
+	virtual ~StaticCell()
+	{
 	}
 
 	void setup(QObject* _obj_parent) override
 	{
 		setParent(_obj_parent);
 		set_image(front_side_image);
+	}
+};
+
+class SeaCell : public StaticCell
+{
+public:
+	SeaCell()
+	{
+		front_side_image = QPixmap("./Resources/cell_img/cell_sea.png");
+
+		m_mask = m_mask | MOVES::N | MOVES::O | MOVES::W;	// default <- , -> , ^
+	}
+};
+
+class CornerCell : public StaticCell
+{
+public:
+	CornerCell()
+	{
+		front_side_image = QPixmap("./Resources/cell_img/corner_cell.png");
 	}
 };
 
@@ -82,8 +121,6 @@ public:
 	{
 		setParent(_obj_parent);
 		set_image(back_side_image);
-
-		setAcceptHoverEvents(true);
 
 		//Animation
 		QGraphicsRotation *flip = new QGraphicsRotation();
@@ -127,20 +164,25 @@ public:
 		smooth_scale_y->setDuration(1000);
 		smooth_scale_y->setEasingCurve(QEasingCurve::InOutQuad);
 
-		QParallelAnimationGroup* flip_animation = new QParallelAnimationGroup(this);
-		flip_animation->addAnimation(smooth_rotation);
-		flip_animation->addAnimation(smooth_scale_x);
-		flip_animation->addAnimation(smooth_scale_y);
+		m_flip_animation = std::make_unique<QParallelAnimationGroup>(this);
+		m_flip_animation->addAnimation(smooth_rotation);
+		m_flip_animation->addAnimation(smooth_scale_x);
+		m_flip_animation->addAnimation(smooth_scale_y);
 
 		m_state_machine = new QStateMachine(this);
 		QState* see_back_side = new QState(m_state_machine);
 		QState* see_front_side = new QState(m_state_machine);
 
 		//half way flip
+		QObject::connect(smooth_first_half_rotation, &QPropertyAnimation::stateChanged, [](QAbstractAnimation::State newState, QAbstractAnimation::State oldState)
+		{
+			int x = 0;
+		});
+
 		QObject::connect(smooth_first_half_rotation, &QPropertyAnimation::finished, [this, see_front_side, see_back_side]()
 		{
 			//Q_PROPERTY may will be better
-
+			const auto& set = m_state_machine->configuration();
 			if (m_state_machine->configuration().contains(see_front_side))
 				set_image(front_side_image);
 			else if (m_state_machine->configuration().contains(see_back_side))
@@ -148,20 +190,25 @@ public:
 		});
 
 		//State Machine
-		/*	
+		/*
 		see_back_side -> (mousePressEvent) -> see_front_side
-		see_front_side -> (reset_field signal by gridmap) -> see_back_side	
+		see_front_side -> (reset_field signal by gridmap) -> see_back_side
 		*/
 
-		see_front_side->assignProperty(this, "zValue", zValue()+1);	//установить при переходе в это состояние
-		see_back_side->assignProperty(this, "zValue", zValue()-1);
+		see_front_side->assignProperty(this, "zValue", 2.0);	//todo wrong
+	//	see_back_side->assignProperty(this, "zValue", 1.0);
 
 		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, see_back_side);
 		mouse_press->setTargetState(see_front_side);
-		mouse_press->addAnimation(flip_animation);		//!!! todo no ownership!
+		mouse_press->addAnimation(m_flip_animation.get());
 
 		QSignalTransition* reset_signal = see_front_side->addTransition(parent(), SIGNAL(reset_field()), see_back_side);
-		reset_signal->addAnimation(flip_animation);
+		reset_signal->addAnimation(m_flip_animation.get());
+
+		QObject::connect(see_front_side, &QState::entered, []
+		{
+			int x = 0;
+		});
 
 		m_state_machine->setInitialState(see_back_side);
 		m_state_machine->start();
@@ -174,10 +221,11 @@ protected:
 		m_state_machine->postEvent(wrapped);	//will be deleted inside
 		Cell::mousePressEvent(_event);
 	}
-	
+
 private:
 	QPixmap back_side_image;	//current image is RoundedRect::image
 	QStateMachine* m_state_machine;
+	std::unique_ptr<QParallelAnimationGroup> m_flip_animation;
 };
 
 //

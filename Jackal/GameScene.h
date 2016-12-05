@@ -1,9 +1,14 @@
 #pragma once
 
+#include <vector>
+
 #include <QGraphicsScene>
+#include <QTimer>
 
 #include "GridMap.h"
 #include "PlayItems.h"
+#include "ShipItem.h"
+#include "PirateItem.h"
 
 class GameScene : public QGraphicsScene
 {
@@ -17,28 +22,36 @@ public:
 		m_grid_map = new GridMap(_side_size, corner_radius);
 		addItem(m_grid_map);			//owns by QGraphicsScene
 
-		m_ship = new ShipItem(this, QRectF(0, 0, 40, 40));
-		addItem(m_ship);
-		m_ship->setPos(m_grid_map->get_cell(6, 12)->pos());
+		auto add_new_play_item = [this](PlayItem* _item)
+		{
+			play_items.push_back(_item);
+			addItem(_item);
 
-		m_pirate = new PirateItem(this, QRectF(0, 0, 20, 20));
-		addItem(m_pirate);
-		m_pirate->setPos(m_grid_map->get_cell(6, 12)->pos());
+			_item->setPos(m_grid_map->get_cell(6, 12)->pos());
 
-		QStateMachine* machine = new QStateMachine(this);
+			QObject::connect(_item, &PlayItem::choosed, [this, _item]()
+			{
+				//unselect all but _item
+				for (auto& it : play_items)
+				{
+					if (it != _item)
+						it->unselect();
+				}
+			});
+		};
 
-	//	machine->setInitialState(begin);
+		add_new_play_item(new ShipItem(this, QRectF(0, 0, 40, 40)));	//todo no constant
+		add_new_play_item(new PirateItem(this, QRectF(0, 0, 20, 20)));
 
-	//	begin->addTransition(m_ship, SIGNAL(choosed()), m_ship->get_state_machine());
-		
-		emit deselect_items();
+		QTimer::singleShot(6000, [this]()
+		{
+			QPointF pf = m_grid_map->get_cell(6, 11)->pos();
+
+			play_items[1]->move_to(pf);
+		});
 	}
 
 private:
 	GridMap* m_grid_map;
-	PlayItem* m_pirate;
-	PlayItem* m_ship;
-
-signals:
-	void deselect_items();
+	std::vector<PlayItem*> play_items;
 };

@@ -7,28 +7,17 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QMouseEventTransition>
 #include <QSignalTransition>
+#include <QPropertyAnimation>
 
 #include "Selection.h"
 
 class PlayItem : public RoundedRect
 {
 	Q_OBJECT
+	Q_PROPERTY(QPointF position READ pos WRITE setPos)
 
 public:
-	enum class COLOR
-	{
-		RED,
-		GREEN, 
-		BLUE,
-		BLACK
-	};
-
-	QStateMachine* get_state_machine()
-	{
-		return m_state_machine;
-	}
-
-	PlayItem(QObject* _parent_obj, COLOR _color, const QRectF& _draw_rect = QRectF())
+	PlayItem(QObject* _parent_obj, const QRectF& _draw_rect = QRectF())
 	{
 		setParent(_parent_obj);
 
@@ -36,38 +25,38 @@ public:
 
 		m_selection = std::make_unique<Selection>(this);	//must be after set_geometry
 
-
-		switch (_color)
-		{
-		case COLOR::RED: set_image(QPixmap("./Resources/items/chip_red.png"));	break;
-		case COLOR::GREEN: break;
-		case COLOR::BLUE: set_image(QPixmap("./Resources/items/chip_blue.png"));	break;
-		case COLOR::BLACK: break;
-		}
-
 		//Common StateMachine
 		/*
-		idle_state-> ->choosed_state
-		choosed_state-> ->idle_state
+		ready_state-> mousePressEvent ->choosed_state
+		choosed_state-> unselect_self signal ->ready_state
 		choosed_state-> ->moving_state
 		moving_state-> ->idle_state
 		*/
+
 		m_state_machine = new QStateMachine(this);
 
-		QState* idle_state = new QState(m_state_machine);
+		QState* ready_state = new QState(m_state_machine);
 		QState* choosed_state = new QState(m_state_machine);
-		QState* moving_state = new QState(m_state_machine);
+		QState* idle_state = new QState(m_state_machine);
 
-		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, idle_state);
+		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, ready_state);
 		mouse_press->setTargetState(choosed_state);
 
-		idle_state->assignProperty(m_selection.get(), "visible", false);
-		choosed_state->assignProperty(m_selection.get(), "visible", true);
+		ready_state->assignProperty(m_selection.get(), "activate", false);
+		choosed_state->assignProperty(m_selection.get(), "activate", true);
+		idle_state->assignProperty(m_selection.get(), "activate", false);
 
-	//	QSignalTransition* deselect_signal = choosed_state->addTransition(_parent_obj, SIGNAL(deselect_items()), idle_state);	//todo add parent
+		choosed_state->addTransition(this, SIGNAL(make_ready()), ready_state);
 		QObject::connect(choosed_state, &QState::entered, this, &PlayItem::choosed);	//emit signal to scene to deselect all another items 
 
-		m_state_machine->setInitialState(idle_state);
+		//Moving animation
+		m_moving = std::make_unique<QPropertyAnimation>(this, "position");
+		m_moving->setEasingCurve(QEasingCurve::InOutQuart);
+
+		QObject::connect(m_moving.get(), &QPropertyAnimation::finished, this, &PlayItem::finish);
+		choosed_state->addTransition(this, SIGNAL(finish()), idle_state);
+
+		m_state_machine->setInitialState(ready_state);
 	}
 
 	virtual QRectF boundingRect() const override
@@ -77,11 +66,30 @@ public:
 		return br.translated(-br.width() / 2, -br.height() / 2);
 	}
 
+	void unselect()	// calling by scene
+	{
+		emit make_ready();	// -> to ready state
+	}
+
+	void move_to(const QPointF& _pos)
+	{
+		QPointF current = pos();
+
+		int s1 = _pos.x() - current.x();
+		int s2 = _pos.y() - current.y();
+		int mod = sqrt(s1*s1 + s2*s2);
+
+		m_moving->setDuration(1000*mod / 50);	//50px/1sec	//todo no constant
+
+		m_moving->setStartValue(pos());
+		m_moving->setEndValue(_pos);
+		m_moving->start();
+	}
+
 protected:
 	std::unique_ptr<Selection> m_selection;
 	QStateMachine* m_state_machine;
 
-protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *_event) override
 	{
 		auto wrapped = new QStateMachine::WrappedEvent(this, new QMouseEvent(QEvent::MouseButtonPress, _event->pos(), _event->button(), _event->buttons(), _event->modifiers()));
@@ -90,26 +98,12 @@ protected:
 		_event->accept();	//чтобы эвент не приходил нижнему item-у
 	}
 
-signals:
+private:
+	QPoint m_grid_pos;
+	std::unique_ptr<QPropertyAnimation> m_moving;
+
+signals :
 	void choosed();
-};
-
-class PirateItem : public PlayItem
-{
-public:
-	PirateItem(QObject* _parent_obj, const QRectF& _draw_rect = QRectF()) : PlayItem(_parent_obj, COLOR::RED, _draw_rect)
-	{
-		m_state_machine->start();
-	}
-
-};
-
-
-class ShipItem : public PlayItem
-{
-public:
-	ShipItem(QObject* _parent_obj, const QRectF& _draw_rect = QRectF()) : PlayItem(_parent_obj, COLOR::BLUE, _draw_rect)
-	{
-		m_state_machine->start();
-	}
+	void make_ready();
+	void finish();
 };
