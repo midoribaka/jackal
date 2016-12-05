@@ -145,6 +145,13 @@ public:
 		smooth_second_half_rotation->setDuration(250);
 		smooth_second_half_rotation->setEasingCurve(QEasingCurve::InOutQuad);
 
+		QPropertyAnimation *bring_to_front = new QPropertyAnimation(this, "zValue");	//свойство добавляется при помощи QGraphicsRotation
+		bring_to_front->setKeyValueAt(0, qvariant_cast<qreal>(zValue()));
+		bring_to_front->setKeyValueAt(0.5, qvariant_cast<qreal>(zValue()+1));
+		bring_to_front->setKeyValueAt(1, qvariant_cast<qreal>(zValue()));
+		bring_to_front->setDuration(1000);
+		bring_to_front->setEasingCurve(QEasingCurve::Linear);
+
 		QSequentialAnimationGroup* smooth_rotation = new QSequentialAnimationGroup();
 		smooth_rotation->addAnimation(smooth_first_half_rotation);
 		smooth_rotation->addAnimation(smooth_second_half_rotation);
@@ -168,25 +175,17 @@ public:
 		m_flip_animation->addAnimation(smooth_rotation);
 		m_flip_animation->addAnimation(smooth_scale_x);
 		m_flip_animation->addAnimation(smooth_scale_y);
+		m_flip_animation->addAnimation(smooth_scale_y);
 
 		m_state_machine = new QStateMachine(this);
 		QState* see_back_side = new QState(m_state_machine);
 		QState* see_front_side = new QState(m_state_machine);
 
 		//half way flip
-		QObject::connect(smooth_first_half_rotation, &QPropertyAnimation::stateChanged, [](QAbstractAnimation::State newState, QAbstractAnimation::State oldState)
-		{
-			int x = 0;
-		});
-
-		QObject::connect(smooth_first_half_rotation, &QPropertyAnimation::finished, [this, see_front_side, see_back_side]()
+		QObject::connect(smooth_first_half_rotation, &QPropertyAnimation::finished, [this]()
 		{
 			//Q_PROPERTY may will be better
-			const auto& set = m_state_machine->configuration();
-			if (m_state_machine->configuration().contains(see_front_side))
-				set_image(front_side_image);
-			else if (m_state_machine->configuration().contains(see_back_side))
-				set_image(back_side_image);
+			set_image(next_image);
 		});
 
 		//State Machine
@@ -195,20 +194,22 @@ public:
 		see_front_side -> (reset_field signal by gridmap) -> see_back_side
 		*/
 
-		see_front_side->assignProperty(this, "zValue", 2.0);	//todo wrong
-	//	see_back_side->assignProperty(this, "zValue", 1.0);
+		QObject::connect(see_back_side, &QState::exited, [this, flip_animation]
+		{
+			next_image = front_side_image;
+			flip_animation->start();
+		});
+
+		QObject::connect(see_front_side, &QState::exited, [this, flip_animation]
+		{
+			next_image = back_side_image;
+			flip_animation->start();
+		});
 
 		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, see_back_side);
 		mouse_press->setTargetState(see_front_side);
-		mouse_press->addAnimation(m_flip_animation.get());
 
 		QSignalTransition* reset_signal = see_front_side->addTransition(parent(), SIGNAL(reset_field()), see_back_side);
-		reset_signal->addAnimation(m_flip_animation.get());
-
-		QObject::connect(see_front_side, &QState::entered, []
-		{
-			int x = 0;
-		});
 
 		m_state_machine->setInitialState(see_back_side);
 		m_state_machine->start();
@@ -226,6 +227,8 @@ private:
 	QPixmap back_side_image;	//current image is RoundedRect::image
 	QStateMachine* m_state_machine;
 	std::unique_ptr<QParallelAnimationGroup> m_flip_animation;
+
+	QPixmap next_image;
 };
 
 //
