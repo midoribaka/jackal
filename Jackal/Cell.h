@@ -184,7 +184,6 @@ public:
 		//half way flip
 		QObject::connect(smooth_first_half_rotation, &QPropertyAnimation::finished, [this]()
 		{
-			//Q_PROPERTY may will be better
 			set_image(next_image);
 		});
 
@@ -194,16 +193,16 @@ public:
 		see_front_side -> (reset_field signal by gridmap) -> see_back_side
 		*/
 
-		QObject::connect(see_back_side, &QState::exited, [this, flip_animation]
+		QObject::connect(see_back_side, &QState::exited, [this]
 		{
 			next_image = front_side_image;
-			flip_animation->start();
+			m_flip_animation->start();
 		});
 
-		QObject::connect(see_front_side, &QState::exited, [this, flip_animation]
+		QObject::connect(see_front_side, &QState::exited, [this]
 		{
 			next_image = back_side_image;
-			flip_animation->start();
+			m_flip_animation->start();
 		});
 
 		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, see_back_side);
