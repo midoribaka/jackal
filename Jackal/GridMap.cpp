@@ -1,5 +1,6 @@
 #include "GridMap.h"
 #include "Deck.h"
+#include "NoActionCell.h"
 
 #include <memory>
 
@@ -9,7 +10,8 @@ GridMap::GridMap(size_t _px_size, size_t _corner_radius, QGraphicsItem* _parent 
 {
 	setZValue(0);
 
-	RoundedRect::set_geometry(QRectF(QPointF(0, 0), QSizeF(_px_size, _px_size)), _corner_radius);	//todo this must be maked by scene
+	RoundedRect::set_draw_rect(QRectF(QPointF(0, 0), QSizeF(_px_size, _px_size))); //todo this must be maked by scene
+	RoundedRect::set_corner_radius(_corner_radius);
 
 	cells.resize(rows_num);
 
@@ -36,7 +38,7 @@ GridMap::GridMap(size_t _px_size, size_t _corner_radius, QGraphicsItem* _parent 
 					((i == rows_num - 2) && (j == 1)) ||
 					((i == rows_num - 2) && (j == rows_num - 2)))
 			{
-				cells[i][j] = std::make_shared<CornerCell>();
+				cells[i][j] = std::make_shared<NoActionCell>();
 			}
 			else
 			{
@@ -44,22 +46,17 @@ GridMap::GridMap(size_t _px_size, size_t _corner_radius, QGraphicsItem* _parent 
 			}
 
 			cells[i][j]->setParentItem(this);		//owns by scene
-			cells[i][j]->setup(this);
-			cells[i][j]->set_geometry(QRectF(0, 0, cell_side_size, cell_side_size), cell_corner_radius);
+			cells[i][j]->set_grid_pos(QPoint(i,j));
+			cells[i][j]->set_side_size(cell_side_size);
 			cells[i][j]->setPos(get_cell_center(j, i));
 		}
+
 	}
-
-	QTimer::singleShot(6000, [this]()
-	{
-		emit reset_field();
-	});
-
 }
 
-std::shared_ptr<Cell> GridMap::get_cell(size_t _x, size_t _y) const
+std::shared_ptr<Cell> GridMap::get_cell(const QPoint& _point) const
 {
-	return cells[_y][_x];
+	return cells[_point.y()][_point.x()];
 }
 
 QPointF GridMap::get_cell_center(size_t _x, size_t _y) const

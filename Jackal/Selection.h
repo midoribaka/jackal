@@ -9,29 +9,26 @@
 class Selection : public RoundedRect
 {
 	Q_OBJECT
-	Q_PROPERTY(int clarity READ clarity WRITE set_clarity)
+	Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)	
 	Q_PROPERTY(bool activate READ activated WRITE activate)
 
 public:
-	Selection(QGraphicsObject* _selected_item) : m_alfa(0)
+	Selection(QGraphicsObject* _selected_item)
 	{
-		setVisible(false);
-
 		setParentItem(_selected_item);
-		QRectF over_size = _selected_item->boundingRect().translated(-1,-1);
-		over_size.setSize(QSize(over_size.width() + 2, over_size.height() + 2));
-		RoundedRect::set_geometry(over_size);
+
+		setOpacity(0);
 		setZValue(1.5);
 
-		m_hover_in = std::make_unique<QPropertyAnimation>(this, "clarity");
-		m_hover_in->setStartValue(0);
-		m_hover_in->setEndValue(200);
+		m_hover_in = std::make_unique<QPropertyAnimation>(this, "opacity");
+		m_hover_in->setStartValue(0.0);
+		m_hover_in->setEndValue(1.0);
 		m_hover_in->setDuration(400);
 		m_hover_in->setEasingCurve(QEasingCurve::OutBack);
 
-		m_hover_out = std::make_unique<QPropertyAnimation>(this, "clarity");
-		m_hover_out->setStartValue(200);
-		m_hover_out->setEndValue(0);
+		m_hover_out = std::make_unique<QPropertyAnimation>(this, "opacity");
+		m_hover_out->setStartValue(1.0);
+		m_hover_out->setEndValue(0.0);
 		m_hover_out->setDuration(400);
 		m_hover_out->setEasingCurve(QEasingCurve::InOutQuad);
 	}
@@ -40,21 +37,22 @@ public:
 	{
 		QPen pen;
 		pen.setWidth(3);
-		pen.setColor(QColor(250, 240, 150, m_alfa));
+		pen.setColor(QColor(250, 240, 150));
 		_painter->setPen(pen);
-		_painter->drawRoundRect(boundingRect(), corner_radius, corner_radius);
+
+		QRectF over_size = parentItem()->boundingRect().translated(-1, -1);
+		over_size.setSize(QSize(over_size.width() + 2, over_size.height() + 2));
+		_painter->drawRoundRect(over_size, corner_radius, corner_radius);
 	}
 
 	void show()
 	{
-		setVisible(true);
 		m_hover_in->start();
 	}
 
 	void hide()
 	{
-		setVisible(false);
-		m_hover_in->start();
+		m_hover_out->start();
 	}
 
 	bool activated()
@@ -68,18 +66,5 @@ public:
 	}
 
 private:
-	int clarity() const
-	{
-		return m_alfa;
-	}
-
-	void set_clarity(int _alfa)
-	{
-		m_alfa = _alfa;
-		update();		//add repaint to queue
-	}
-
 	std::unique_ptr<QPropertyAnimation> m_hover_in, m_hover_out;
-
-	int m_alfa;
 };

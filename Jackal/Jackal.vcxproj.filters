@@ -43,11 +43,17 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_GameScene.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="Cell.cpp">
+      <Filter>Sources\Cells</Filter>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_Cell.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_Cell.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ActionCell.cpp">
+      <Filter>Generated Files\Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -60,14 +66,23 @@
     <ClInclude Include="Player.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="RoundedRect.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="PirateItem.h">
       <Filter>Headers\PlayItems</Filter>
     </ClInclude>
     <ClInclude Include="ShipItem.h">
       <Filter>Headers\PlayItems</Filter>
+    </ClInclude>
+    <ClInclude Include="OtherCells.h">
+      <Filter>Headers\Cells</Filter>
+    </ClInclude>
+    <ClInclude Include="RoundedRect.h">
+      <Filter>Headers\Cells</Filter>
+    </ClInclude>
+    <ClInclude Include="NoActionCell.h">
+      <Filter>Headers\Cells</Filter>
+    </ClInclude>
+    <ClInclude Include="FlippableCell.h">
+      <Filter>Headers\Cells</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -80,9 +95,6 @@
     <CustomBuild Include="MainWin.qrc">
       <Filter>_rcc</Filter>
     </CustomBuild>
-    <CustomBuild Include="Cell.h">
-      <Filter>Headers</Filter>
-    </CustomBuild>
     <CustomBuild Include="Selection.h">
       <Filter>Headers</Filter>
     </CustomBuild>
@@ -91,6 +103,12 @@
     </CustomBuild>
     <CustomBuild Include="PlayItems.h">
       <Filter>Headers\PlayItems</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Cell.h">
+      <Filter>Headers\Cells</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ActionCell.h">
+      <Filter>Headers\Cells</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +136,12 @@
     </Filter>
     <Filter Include="Headers\PlayItems">
       <UniqueIdentifier>{d7810e5e-3825-408c-92ff-fe99b158fa27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Cells">
+      <UniqueIdentifier>{ce5842ef-30af-4bfd-b474-15f733175602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Cells">
+      <UniqueIdentifier>{91adedc2-8da6-4541-8f16-6cd88057488f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

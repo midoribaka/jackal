@@ -20,7 +20,7 @@ class GridMap : public RoundedRect
 public:
 	GridMap(size_t _px_size, size_t _corner_radius, QGraphicsItem* _parent = 0);
 
-	std::shared_ptr<Cell> get_cell(size_t _x, size_t _y) const;
+	std::shared_ptr<Cell> get_cell(const QPoint& _point) const;
 
 private:
 	QVector<QVector<std::shared_ptr<Cell> > > cells;
@@ -28,8 +28,4 @@ private:
 	QPointF get_cell_center(size_t _x, size_t _y) const;
 
 	size_t cell_side_size;
-
-
-signals:
-	void reset_field();
 };

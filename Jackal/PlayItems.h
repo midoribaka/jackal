@@ -21,10 +21,10 @@ public:
 	{
 		setParent(_parent_obj);
 
-		RoundedRect::set_geometry(_draw_rect, 0);
+	
 
 		m_selection = std::make_unique<Selection>(this);	//must be after set_geometry
-
+		RoundedRect::set_draw_rect(_draw_rect);
 		//Common StateMachine
 		/*
 		ready_state-> mousePressEvent ->choosed_state
@@ -84,6 +84,16 @@ public:
 		m_moving->setStartValue(pos());
 		m_moving->setEndValue(_pos);
 		m_moving->start();
+	}
+
+	void set_grid_pos(const QPoint& _point)
+	{
+		m_grid_pos = _point;
+	}
+
+	QPoint grid_pos() const
+	{
+		return m_grid_pos;
 	}
 
 protected:

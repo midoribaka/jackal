@@ -1,7 +1,5 @@
 #pragma once
 #include <QGraphicsObject>
-#include <QFile>
-#include <QLayout>
 #include <QPixmap>
 #include <QRect>
 #include <QPainter>
@@ -18,13 +16,17 @@ public:
 		color = _color;
 	}
 
-	void set_geometry(const QRectF& _draw_rect, size_t _radius = 0)
+	void set_draw_rect(const QRectF& _draw_rect)
 	{
 		draw_rect = _draw_rect;
+	}
+
+	void set_corner_radius(size_t _radius)
+	{
 		corner_radius = _radius;
 	}
 
-	void set_image(const QPixmap& _pixmap)
+	virtual void set_image(const QPixmap& _pixmap)
 	{
 		image = _pixmap;
 		update();
