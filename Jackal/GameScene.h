@@ -9,6 +9,7 @@
 #include "PlayItems.h"
 #include "ShipItem.h"
 #include "PirateItem.h"
+#include "ActionCell.h"
 
 class GameScene : public QGraphicsScene
 {
@@ -42,7 +43,7 @@ public:
 				}
 
 				//
-				std::shared_ptr<Cell> item_cell = m_grid_map->get_cell(_item->grid_pos());
+				select_cells_around(QPoint(6,6));
 			//	int cell_mask = item_cell->mask();
 
 			});
@@ -50,38 +51,35 @@ public:
 
 		add_new_play_item(new ShipItem(this, QRectF(0, 0, 40, 40)));	//todo no constant
 		add_new_play_item(new PirateItem(this, QRectF(0, 0, 20, 20)));
-
-		//QTimer::singleShot(6000, [this]()
-		//{
-		//	QPointF pf = m_grid_map->get_cell(6, 11)->pos();
-
-		//	play_items[1]->move_to(pf);
-		//});
 	}
 
 private:
-	void select_cells_around(const std::shared_ptr<Cell>& _center_cell)
+	void select_cells_around(const QPoint& _grid_pos)
 	{
 	//	int mask = _center_cell->mask();
-		int mask = 0;
-		QPoint center_cell_pos = _center_cell->grid_pos();
+		int mask = 0xAFABEA;	//all
+	//	QPoint center_cell_pos = _center_cell->grid_pos();
 
-		size_t counter = 1;
-		while (mask > counter)
+		size_t bit_counter = 0;
+		size_t pow_counter;
+
+		while (mask > pow_counter)
 		{
-			size_t test = mask & counter;
-			if (test)
+			pow_counter = 1 << bit_counter;		//2^bit_counter
+
+			if (mask & pow_counter)
 			{
-				size_t n = log2(test);
-				size_t i = n / 3;	//floor
-				size_t j = n - i * 3;
+				size_t i = bit_counter / 5;	//floor
+				size_t j = bit_counter - i * 5;
 
-			//	m_grid_map[i][j]->set_
-			}
-			
+				//todo bad. out of range
+
+				m_grid_map->get_cell(QPoint(_grid_pos.y()-2 + i, _grid_pos.x()-2+ j))->make_ready();
+			}	
+
+			++bit_counter;
 		}
-
-			
+	
 	};
 
 	GridMap* m_grid_map;

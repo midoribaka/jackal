@@ -42,32 +42,46 @@ public:
 		m_state_machine->addState(m_initial_state);
 		m_state_machine->setInitialState(m_initial_state);
 
-		QState* selected_group = new QState(m_initial_state);
-		QState* unselected = new QState(selected_group);
-		QState* selected = new QState(selected_group);
+		QState* action_group = new QState(m_initial_state);
+		QState* idle = new QState(action_group);
+		QState* ready = new QState(action_group);
+		QState* activated = new QState(action_group);
 
-		unselected->addTransition(this, &ActionCell::select_self, selected);
-		selected->addTransition(this, &ActionCell::unselect_self, unselected);
+		idle->addTransition(this, &ActionCell::make_ready_called, ready);
+		ready->addTransition(this, &ActionCell::make_idle_called, idle);
+		ready->addTransition(this, &ActionCell::activate_called, activated);
 
-		unselected->assignProperty(m_selection.get(), "activate", false);
-		selected->assignProperty(m_selection.get(), "activate", true);
+		QObject::connect(ready, &QState::entered, [this]
+		{
+			m_selection->hover_in();
+		});
 
-		selected_group->setInitialState(selected);
+		QObject::connect(ready, &QState::exited, [this]
+		{
+			m_selection->hover_out();
+		});
+
+		action_group->setInitialState(idle);
 	}
 
 	virtual ~ActionCell()
 	{
 	}
 
-	void select()
+	void make_ready() override
 	{
-		emit select_self();
-	};
+		emit make_ready_called();
+	}
 
-	void unselect()
+	void make_idle() override
 	{
-		emit unselect_self();
-	};
+		emit make_idle_called();
+	}
+
+	void activate() override
+	{
+		emit activate_called();
+	}
 
 protected:
 	QState* m_initial_state;
@@ -78,6 +92,7 @@ private:
 	int m_move_mask;
 
 signals:
-	void select_self();
-	void unselect_self();
+	void make_ready_called();
+	void make_idle_called();
+	void activate_called();
 };

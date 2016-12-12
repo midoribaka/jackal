@@ -3,17 +3,16 @@
 #include <memory>
 
 #include <QPropertyAnimation>
+#include <QGraphicsOpacityEffect>
 
 #include "RoundedRect.h"
 
 class Selection : public RoundedRect
 {
 	Q_OBJECT
-	Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)	
-	Q_PROPERTY(bool activate READ activated WRITE activate)
 
 public:
-	Selection(QGraphicsObject* _selected_item)
+	Selection(QGraphicsObject* _selected_item): m_alfa(0)
 	{
 		setParentItem(_selected_item);
 
@@ -22,12 +21,12 @@ public:
 
 		m_hover_in = std::make_unique<QPropertyAnimation>(this, "opacity");
 		m_hover_in->setStartValue(0.0);
-		m_hover_in->setEndValue(1.0);
+		m_hover_in->setEndValue(0.9);
 		m_hover_in->setDuration(400);
 		m_hover_in->setEasingCurve(QEasingCurve::OutBack);
 
 		m_hover_out = std::make_unique<QPropertyAnimation>(this, "opacity");
-		m_hover_out->setStartValue(1.0);
+		m_hover_out->setStartValue(0.9);
 		m_hover_out->setEndValue(0.0);
 		m_hover_out->setDuration(400);
 		m_hover_out->setEasingCurve(QEasingCurve::InOutQuad);
@@ -36,35 +35,31 @@ public:
 	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override
 	{
 		QPen pen;
-		pen.setWidth(3);
-		pen.setColor(QColor(250, 240, 150));
+//		pen.setWidth(3);
+//		pen.setColor(QColor(250, 240, 150));
+		pen.setWidth(1);				//debug
+		pen.setColor(QColor(255, 0, 0));//debug
 		_painter->setPen(pen);
-
-		QRectF over_size = parentItem()->boundingRect().translated(-1, -1);
-		over_size.setSize(QSize(over_size.width() + 2, over_size.height() + 2));
-		_painter->drawRoundRect(over_size, corner_radius, corner_radius);
+		_painter->drawRoundRect(boundingRect(), corner_radius, corner_radius);
 	}
 
-	void show()
+	virtual QRectF boundingRect() const override
+	{
+		return QRectF(-5, -5, 10, 10);	//debug
+//		return parentItem()->boundingRect().adjusted(-1, -1, 1, 1);	//don't put this line into _painter->drawRoundRect(boundingRect(), corner_radius, corner_radius); THIS WILL NOT WORK
+	}
+
+	void hover_in()
 	{
 		m_hover_in->start();
 	}
 
-	void hide()
+	void hover_out()
 	{
 		m_hover_out->start();
 	}
 
-	bool activated()
-	{
-		return isVisible();
-	}
-
-	void activate(bool _arg)
-	{
-		(_arg) ? show() : hide();
-	}
-
 private:
+	size_t m_alfa;
 	std::unique_ptr<QPropertyAnimation> m_hover_in, m_hover_out;
 };

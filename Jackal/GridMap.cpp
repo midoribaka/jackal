@@ -48,7 +48,7 @@ GridMap::GridMap(size_t _px_size, size_t _corner_radius, QGraphicsItem* _parent 
 			cells[i][j]->setParentItem(this);		//owns by scene
 			cells[i][j]->set_grid_pos(QPoint(i,j));
 			cells[i][j]->set_side_size(cell_side_size);
-			cells[i][j]->setPos(get_cell_center(j, i));
+			cells[i][j]->setPos(grid_to_px(j, i));
 		}
 
 	}
@@ -59,7 +59,7 @@ std::shared_ptr<Cell> GridMap::get_cell(const QPoint& _point) const
 	return cells[_point.y()][_point.x()];
 }
 
-QPointF GridMap::get_cell_center(size_t _x, size_t _y) const
+QPointF GridMap::grid_to_px(size_t _x, size_t _y) const
 {
 	return QPointF(padding_size + cell_side_size/2 + _x*(spacer_size + cell_side_size), padding_size + cell_side_size / 2 + _y*(spacer_size + cell_side_size) );
 }

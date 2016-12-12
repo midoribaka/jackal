@@ -42,9 +42,19 @@ public:
 		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, ready_state);
 		mouse_press->setTargetState(choosed_state);
 
-		ready_state->assignProperty(m_selection.get(), "activate", false);
-		choosed_state->assignProperty(m_selection.get(), "activate", true);
-		idle_state->assignProperty(m_selection.get(), "activate", false);
+		QObject::connect(choosed_state, &QState::entered, [this]
+		{
+			m_selection->hover_in();
+		});
+
+		QObject::connect(choosed_state, &QState::exited, [this]
+		{
+			m_selection->hover_out();
+		});
+
+		//ready_state->assignProperty(m_selection.get(), "activate", false);
+		//choosed_state->assignProperty(m_selection.get(), "activate", true);
+		//idle_state->assignProperty(m_selection.get(), "activate", false);
 
 		choosed_state->addTransition(this, SIGNAL(make_ready()), ready_state);
 		QObject::connect(choosed_state, &QState::entered, this, &PlayItem::choosed);	//emit signal to scene to deselect all another items 

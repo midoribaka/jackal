@@ -25,7 +25,7 @@ public:
 private:
 	QVector<QVector<std::shared_ptr<Cell> > > cells;
 
-	QPointF get_cell_center(size_t _x, size_t _y) const;
+	QPointF grid_to_px(size_t _x, size_t _y) const;
 
 	size_t cell_side_size;
 };

@@ -91,7 +91,7 @@ protected:
 	{
 		auto wrapped = new QStateMachine::WrappedEvent(this, new QMouseEvent(QEvent::MouseButtonPress, _event->pos(), _event->button(), _event->buttons(), _event->modifiers()));
 		m_state_machine->postEvent(wrapped);	//will be deleted inside
-		Cell::mousePressEvent(_event);
+		ActionCell::mousePressEvent(_event);
 	}
 
 	QPixmap m_front_side_image;
