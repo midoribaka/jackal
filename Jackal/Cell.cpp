@@ -22,11 +22,6 @@ QPoint Cell::grid_pos() const
 	return m_grid_pos;
 }
 
-void Cell::set_grid_pos(const QPoint& _pos)
-{
-	m_grid_pos = _pos;
-}
-
 void Cell::set_side_size(size_t _size)
 {
 	RoundedRect::set_draw_rect(QRectF(0, 0, _size, _size));

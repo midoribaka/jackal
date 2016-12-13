@@ -46,7 +46,7 @@ GridMap::GridMap(size_t _px_size, size_t _corner_radius, QGraphicsItem* _parent 
 			}
 
 			cells[i][j]->setParentItem(this);		//owns by scene
-			cells[i][j]->set_grid_pos(QPoint(i,j));
+			cells[i][j]->set_grid_pos(QPoint(j,i));
 			cells[i][j]->set_side_size(cell_side_size);
 			cells[i][j]->setPos(grid_to_px(j, i));
 		}

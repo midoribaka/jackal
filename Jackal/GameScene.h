@@ -42,10 +42,8 @@ public:
 						it->unselect();
 				}
 
-				//
-				select_cells_around(QPoint(6,6));
-			//	int cell_mask = item_cell->mask();
-
+				//possible moves
+				select_cells_around(_item->grid_pos());
 			});
 		};
 
@@ -56,12 +54,11 @@ public:
 private:
 	void select_cells_around(const QPoint& _grid_pos)
 	{
-	//	int mask = _center_cell->mask();
-		int mask = 0xAFABEA;	//all
-	//	QPoint center_cell_pos = _center_cell->grid_pos();
+		const size_t mask_side = 5;
+		int mask = m_grid_map->get_cell(_grid_pos)->mask();
 
 		size_t bit_counter = 0;
-		size_t pow_counter;
+		size_t pow_counter = 0;
 
 		while (mask > pow_counter)
 		{
@@ -69,12 +66,11 @@ private:
 
 			if (mask & pow_counter)
 			{
-				size_t i = bit_counter / 5;	//floor
-				size_t j = bit_counter - i * 5;
+				size_t i = bit_counter / mask_side;	//floor
+				size_t j = bit_counter - i * mask_side;
 
 				//todo bad. out of range
-
-				m_grid_map->get_cell(QPoint(_grid_pos.y()-2 + i, _grid_pos.x()-2+ j))->make_ready();
+				m_grid_map->get_cell(QPoint(_grid_pos.x()- mask_side/2 + j, _grid_pos.y()- mask_side/2 + i))->make_ready();
 			}	
 
 			++bit_counter;

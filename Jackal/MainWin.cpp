@@ -24,6 +24,12 @@ MainWin::MainWin(QWidget *_parent) : QMainWindow(_parent)
 
 	QWidget* some_left = new QWidget();
 	view_widget = new QGraphicsView();
+
+//	QTransform tr;
+//	tr.translate(-2000, -2000);
+//	tr.rotate(20, Qt::XAxis);
+
+//	view_widget->setTransform(tr, true);
 	QWidget* some_right = new QWidget();
 
 	some_left->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -34,14 +40,13 @@ MainWin::MainWin(QWidget *_parent) : QMainWindow(_parent)
 	main_layout->addWidget(view_widget, Qt::AlignCenter);
 	main_layout->addWidget(some_right);
 
-
 	view_widget->setScene(new GameScene(active_screen_h, view_widget));
 	view_widget->setRenderHints(QPainter::Antialiasing| QPainter::SmoothPixmapTransform| QPainter::TextAntialiasing);
 
 	main_widget->setLayout(main_layout);
 	setCentralWidget(main_widget);
 
-	setFixedSize(screen_w, screen_h);
+	setFixedSize(screen_w+200, screen_h+200);
 }
 
 MainWin::~MainWin()

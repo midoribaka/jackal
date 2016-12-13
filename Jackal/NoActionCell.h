@@ -24,5 +24,15 @@ public:
 	{
 		//do nothing
 	}
+
+	int mask() const override
+	{
+		return 0;
+	}
+
+	void set_grid_pos(const QPoint&)
+	{
+		//do nothing
+	}
 };
 //

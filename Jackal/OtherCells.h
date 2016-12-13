@@ -11,6 +11,7 @@ public:
 	SeaCell()
 	{
 		RoundedRect::set_image(QPixmap("./Resources/cell_img/cell_sea.png"));
+		m_state_machine->start();	//todo baaad
 	}
 };
 
@@ -24,6 +25,8 @@ public:
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<> dis(1, 4);
 		m_front_side_image = QPixmap("./Resources/cell_img/empty-" + QString::number(dis(gen)) + ".png");
+
+		m_move_mask = m_move_mask | MOVES::AROUND;
 	}
 };
 

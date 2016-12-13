@@ -16,14 +16,15 @@ public:
 	virtual ~Cell();
 	virtual QRectF boundingRect() const override;
 	QPoint grid_pos() const;
-	void set_grid_pos(const QPoint& _pos);
 	void set_side_size(size_t _size);
 
-	//todo bad because noactioncell does not need make_idle, make_ready and activate
+	//todo bad because noactioncell does not need make_idle, make_ready, mask, activate, set_grid_pos
+	virtual void set_grid_pos(const QPoint& _pos) = 0;
 	virtual void make_idle() = 0;
 	virtual void make_ready() = 0;
 	virtual void activate() = 0;
+	virtual int mask() const = 0;
 
-private:
+protected:
 	QPoint m_grid_pos;
 };

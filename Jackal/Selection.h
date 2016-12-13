@@ -12,7 +12,7 @@ class Selection : public RoundedRect
 	Q_OBJECT
 
 public:
-	Selection(QGraphicsObject* _selected_item): m_alfa(0)
+	Selection(QGraphicsObject* _selected_item): m_alfa(0), m_color(250,240,150)
 	{
 		setParentItem(_selected_item);
 
@@ -35,18 +35,19 @@ public:
 	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override
 	{
 		QPen pen;
-//		pen.setWidth(3);
-//		pen.setColor(QColor(250, 240, 150));
-		pen.setWidth(1);				//debug
-		pen.setColor(QColor(255, 0, 0));//debug
+		pen.setWidth(2);
+		pen.setColor(m_color);
+//		pen.setWidth(1);				//debug
+//		pen.setColor(QColor(255, 0, 0));//debug
 		_painter->setPen(pen);
 		_painter->drawRoundRect(boundingRect(), corner_radius, corner_radius);
 	}
 
 	virtual QRectF boundingRect() const override
 	{
-		return QRectF(-5, -5, 10, 10);	//debug
+//		return QRectF(-5, -5, 10, 10);	//debug
 //		return parentItem()->boundingRect().adjusted(-1, -1, 1, 1);	//don't put this line into _painter->drawRoundRect(boundingRect(), corner_radius, corner_radius); THIS WILL NOT WORK
+		return parentItem()->boundingRect();
 	}
 
 	void hover_in()
@@ -59,7 +60,14 @@ public:
 		m_hover_out->start();
 	}
 
+	void set_color(const QColor& _color)
+	{
+		m_color = _color;
+		update();	//add redraw to queue
+	}
+
 private:
 	size_t m_alfa;
 	std::unique_ptr<QPropertyAnimation> m_hover_in, m_hover_out;
+	QColor m_color;
 };
