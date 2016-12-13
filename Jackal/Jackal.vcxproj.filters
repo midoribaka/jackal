@@ -75,14 +75,20 @@
     <ClInclude Include="OtherCells.h">
       <Filter>Headers\Cells</Filter>
     </ClInclude>
-    <ClInclude Include="RoundedRect.h">
-      <Filter>Headers\Cells</Filter>
-    </ClInclude>
     <ClInclude Include="NoActionCell.h">
       <Filter>Headers\Cells</Filter>
     </ClInclude>
     <ClInclude Include="FlippableCell.h">
       <Filter>Headers\Cells</Filter>
+    </ClInclude>
+    <ClInclude Include="Circle.h">
+      <Filter>Headers\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="RoundedRect.h">
+      <Filter>Headers\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractShape.h">
+      <Filter>Headers\Primitives</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +148,9 @@
     </Filter>
     <Filter Include="Sources\Cells">
       <UniqueIdentifier>{91adedc2-8da6-4541-8f16-6cd88057488f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Primitives">
+      <UniqueIdentifier>{2351b17d-ed72-4f11-a60e-722855b0b3b1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

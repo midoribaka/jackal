@@ -21,17 +21,8 @@ public:
 	{
 		setParent(_parent_obj);
 
-	
-
-		m_selection = std::make_unique<Selection>(this);	//must be after set_geometry
+		m_selection = std::make_unique<Selection>(this);	
 		RoundedRect::set_draw_rect(_draw_rect);
-		//Common StateMachine
-		/*
-		ready_state-> mousePressEvent ->choosed_state
-		choosed_state-> unselect_self signal ->ready_state
-		choosed_state-> ->moving_state
-		moving_state-> ->idle_state
-		*/
 
 		m_state_machine = new QStateMachine(this);
 

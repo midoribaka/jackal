@@ -137,6 +137,8 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ActionCell.h" />
+    <ClInclude Include="AbstractShape.h" />
+    <ClInclude Include="Circle.h" />
     <ClInclude Include="NoActionCell.h" />
     <ClInclude Include="OtherCells.h" />
     <ClInclude Include="ShipItem.h" />

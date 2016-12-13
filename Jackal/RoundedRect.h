@@ -4,26 +4,19 @@
 #include <QRect>
 #include <QPainter>
 
-class RoundedRect : public QGraphicsObject
+#include "AbstractShape.h"
+
+class RoundedRect : public AbstractShape
 {
 public:
-	RoundedRect() : draw_rect(QRect()), corner_radius(0), color(QColor(0,0,0,0))
+	RoundedRect() : corner_radius(0)
 	{
-	}
-
-	void set_color(const QColor& _color)
-	{
-		color = _color;
-	}
-
-	void set_draw_rect(const QRectF& _draw_rect)
-	{
-		draw_rect = _draw_rect;
 	}
 
 	void set_corner_radius(size_t _radius)
 	{
 		corner_radius = _radius;
+		update();
 	}
 
 	virtual void set_image(const QPixmap& _pixmap)
@@ -34,7 +27,7 @@ public:
 
 	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override
 	{
-		_painter->setBrush(color);
+		_painter->setBrush(AbstractShape::m_brush);
 		_painter->setPen(Qt::NoPen);	// no border
 		_painter->drawRoundRect(boundingRect(), corner_radius, corner_radius);
 
@@ -44,19 +37,11 @@ public:
 		}
 	}
 
-	virtual QRectF boundingRect() const override
-	{
-		//origin at 0,0 top left
-		return draw_rect;
-	}
-
 	virtual ~RoundedRect()
 	{
 	}
 
 protected:
 	QPixmap image;
-	QRectF draw_rect;
 	size_t corner_radius;
-	QColor color;
 };
