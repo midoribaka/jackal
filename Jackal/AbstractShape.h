@@ -6,7 +6,7 @@
 class AbstractShape : public QGraphicsObject
 {
 public:
-	AbstractShape() : m_draw_rect(QRectF()), m_brush(QColor(255, 255, 255))
+	AbstractShape() : m_draw_rect(QRectF()), m_brush(Qt::NoBrush), m_pen(Qt::NoPen)
 	{
 	}
 
@@ -26,6 +26,21 @@ public:
 		m_brush = _brush;
 	}
 
+	void set_pen(const QPen& _pen)
+	{
+		m_pen = _pen;
+	}
+
+	QPen pen() const
+	{
+		return m_pen;
+	}
+
+	QBrush brush() const
+	{
+		return m_brush;
+	}
+
 	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override = 0;
 
 	virtual ~AbstractShape()
@@ -35,4 +50,5 @@ public:
 protected:
 	QRectF m_draw_rect;
 	QBrush m_brush;
+	QPen m_pen;
 };

@@ -21,7 +21,8 @@ public:
 	{
 		setParent(_parent_obj);
 
-		m_selection = std::make_unique<Selection>(this);	
+		m_selection = std::make_unique<RectSelection>(this);	
+		m_selection->set_color(QColor(250, 240, 150));
 		RoundedRect::set_draw_rect(_draw_rect);
 
 		m_state_machine = new QStateMachine(this);
@@ -98,7 +99,7 @@ public:
 	}
 
 protected:
-	std::unique_ptr<Selection> m_selection;
+	std::unique_ptr<RectSelection> m_selection;
 	QStateMachine* m_state_machine;
 
 	void mousePressEvent(QGraphicsSceneMouseEvent *_event) override

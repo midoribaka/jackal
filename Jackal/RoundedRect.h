@@ -9,31 +9,31 @@
 class RoundedRect : public AbstractShape
 {
 public:
-	RoundedRect() : corner_radius(0)
+	RoundedRect() : m_corner_radius(0)
 	{
 	}
 
 	void set_corner_radius(size_t _radius)
 	{
-		corner_radius = _radius;
+		m_corner_radius = _radius;
 		update();
 	}
 
 	virtual void set_image(const QPixmap& _pixmap)
 	{
-		image = _pixmap;
+		m_image = _pixmap;
 		update();
 	}
 
 	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override
 	{
 		_painter->setBrush(AbstractShape::m_brush);
-		_painter->setPen(Qt::NoPen);	// no border
-		_painter->drawRoundRect(boundingRect(), corner_radius, corner_radius);
+		_painter->setPen(AbstractShape::m_pen);	
+		_painter->drawRoundRect(boundingRect(), m_corner_radius, m_corner_radius);
 
-		if (!image.isNull()) 
+		if (!m_image.isNull()) 
 		{
-			_painter->drawPixmap(boundingRect(), image, image.rect());	//autoscale //todo довольно затратно
+			_painter->drawPixmap(boundingRect(), m_image, m_image.rect());	//autoscale //todo довольно затратно
 		}
 	}
 
@@ -42,6 +42,6 @@ public:
 	}
 
 protected:
-	QPixmap image;
-	size_t corner_radius;
+	QPixmap m_image;
+	size_t m_corner_radius;
 };

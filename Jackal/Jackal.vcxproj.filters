@@ -31,9 +31,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_MainWin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_Selection.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_PlayItems.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>

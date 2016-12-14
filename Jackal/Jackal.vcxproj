@@ -97,7 +97,6 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_PlayItems.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_Selection.cpp" />
     <ClCompile Include="GeneratedFiles\qrc_MainWin.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
@@ -143,7 +142,20 @@
     <ClInclude Include="OtherCells.h" />
     <ClInclude Include="ShipItem.h" />
     <ClInclude Include="FlippableCell.h" />
-    <CustomBuild Include="Selection.h" />
+    <CustomBuild Include="Selection.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Outputs>
+    </CustomBuild>
     <CustomBuild Include="PlayItems.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I$(BOOST_DIR)\." "-I$(QT_DIR)\include" "-I$(QT_DIR)\include\QtNetwork" "-I$(QT_DIR)\include\QtCore" "-I$(QT_DIR)\include\QtANGLE" "-I$(QT_DIR)\include\QtGui" "-I$(QT_DIR)\include\QtSvg" "-I$(QT_DIR)\include\QtWidgets" "-I$(QWT_DIR)\include" "-I$(SolutionDir)\Common" "-I$(ProjectDir)\headers" "-I$(ProjectDir)\GeneratedFiles" "-I$(NOINHERIT)\."</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing PlayItems.h...</Message>

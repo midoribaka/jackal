@@ -62,7 +62,7 @@ public:
 
 	ActionCell() : m_move_mask(0)
 	{
-		m_selection = std::make_unique<Selection>(this);	
+		m_selection = std::make_unique<RectSelection>(this);	
 		m_selection->set_color(QColor(172, 65, 255));
 
 		m_state_machine = new QStateMachine(this);
@@ -187,7 +187,7 @@ protected:
 	}
 
 private:
-	std::unique_ptr<Selection> m_selection;
+	std::unique_ptr<RectSelection> m_selection;
 
 signals:
 	void make_ready_called();
