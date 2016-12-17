@@ -2,9 +2,13 @@
 
 #include <QGraphicsObject>
 #include <QGradient>
+#include <QPen>
 
 class AbstractShape : public QGraphicsObject
 {
+	Q_OBJECT
+	Q_PROPERTY(QPointF position READ pos WRITE setPos)
+
 public:
 	AbstractShape() : m_draw_rect(QRectF()), m_brush(Qt::NoBrush), m_pen(Qt::NoPen)
 	{

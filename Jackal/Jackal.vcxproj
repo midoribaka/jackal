@@ -83,6 +83,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="GeneratedFiles\Debug\moc_AbstractShape.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_ActionCell.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_Cell.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -94,7 +96,8 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_MainWin.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_PlayItems.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_Player.cpp" />
+    <ClCompile Include="GeneratedFiles\Debug\moc_PlayItem.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_MainWin.cpp">
@@ -112,12 +115,13 @@
     <ClCompile Include="GeneratedFiles\Release\moc_MainWin.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_PlayItems.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_PlayItem.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GridMap.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWin.cpp" />
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MainWin.h" />
@@ -136,7 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ActionCell.h" />
-    <ClInclude Include="AbstractShape.h" />
+    <CustomBuild Include="AbstractShape.h" />
     <ClInclude Include="Circle.h" />
     <ClInclude Include="NoActionCell.h" />
     <ClInclude Include="OtherCells.h" />
@@ -156,18 +160,18 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </Outputs>
     </CustomBuild>
-    <CustomBuild Include="PlayItems.h">
+    <CustomBuild Include="PlayItem.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I$(BOOST_DIR)\." "-I$(QT_DIR)\include" "-I$(QT_DIR)\include\QtNetwork" "-I$(QT_DIR)\include\QtCore" "-I$(QT_DIR)\include\QtANGLE" "-I$(QT_DIR)\include\QtGui" "-I$(QT_DIR)\include\QtSvg" "-I$(QT_DIR)\include\QtWidgets" "-I$(QWT_DIR)\include" "-I$(SolutionDir)\Common" "-I$(ProjectDir)\headers" "-I$(ProjectDir)\GeneratedFiles" "-I$(NOINHERIT)\."</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing PlayItems.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing PlayItem.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I$(BOOST_DIR)\." "-I$(QT_DIR)\include" "-I$(QT_DIR)\include\QtNetwork" "-I$(QT_DIR)\include\QtCore" "-I$(QT_DIR)\include\QtANGLE" "-I$(QT_DIR)\include\QtGui" "-I$(QT_DIR)\include\QtSvg" "-I$(QT_DIR)\include\QtWidgets" "-I$(QWT_DIR)\include" "-I$(SolutionDir)\Common" "-I$(ProjectDir)\headers" "-I$(ProjectDir)\GeneratedFiles" "-I$(NOINHERIT)\."</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing PlayItems.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing PlayItem.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QT_DIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QT_DIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QT_DIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QT_DIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
     <ClInclude Include="PirateItem.h" />
-    <ClInclude Include="Player.h" />
+    <CustomBuild Include="Player.h" />
     <ClInclude Include="RoundedRect.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </Command>

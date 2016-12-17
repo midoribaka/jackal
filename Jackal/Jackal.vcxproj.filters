@@ -31,12 +31,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_MainWin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_PlayItems.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_PlayItems.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_GameScene.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -52,15 +46,30 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_ActionCell.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_AbstractShape.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Player.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PlayItem.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PlayItem.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Deck.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="GameLogic.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="PirateItem.h">
@@ -84,9 +93,6 @@
     <ClInclude Include="RoundedRect.h">
       <Filter>Headers\Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="AbstractShape.h">
-      <Filter>Headers\Primitives</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GridMap.h">
@@ -104,14 +110,20 @@
     <CustomBuild Include="GameScene.h">
       <Filter>Headers</Filter>
     </CustomBuild>
-    <CustomBuild Include="PlayItems.h">
-      <Filter>Headers\PlayItems</Filter>
-    </CustomBuild>
     <CustomBuild Include="Cell.h">
       <Filter>Headers\Cells</Filter>
     </CustomBuild>
     <CustomBuild Include="ActionCell.h">
       <Filter>Headers\Cells</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AbstractShape.h">
+      <Filter>Headers\Primitives</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Player.h">
+      <Filter>Headers</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PlayItem.h">
+      <Filter>Headers\PlayItems</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -30,7 +30,7 @@ public:
 		return 0;
 	}
 
-	void set_grid_pos(const QPoint&)
+	void set_grid_pos(const QPoint&) override
 	{
 		//do nothing
 	}

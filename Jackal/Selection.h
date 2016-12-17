@@ -7,11 +7,38 @@
 #include "RoundedRect.h"
 #include "Circle.h"
 
-class RectSelection : public RoundedRect
+class Selection
+{
+public:
+	Selection() : m_alfa(0)
+	{
+	}
+	virtual ~Selection()
+	{
+	}
+
+	virtual void set_color(const QColor& _color) = 0;
+
+	void hover_in()
+	{
+		m_hover_in->start();
+	}
+
+	void hover_out()
+	{
+		m_hover_out->start();
+	}
+
+protected:
+	size_t m_alfa;
+	std::unique_ptr<QPropertyAnimation> m_hover_in, m_hover_out;
+};
+
+class RectSelection : public RoundedRect, public Selection
 {
 
 public:
-	RectSelection(QGraphicsObject* _selected_item): m_alfa(0)
+	RectSelection(QGraphicsObject* _selected_item)
 	{
 		setParentItem(_selected_item);
 
@@ -40,36 +67,21 @@ public:
 //		return parentItem()->boundingRect().adjusted(-1, -1, 1, 1);	//don't put this line into _painter->drawRoundRect(boundingRect(), corner_radius, corner_radius); THIS WILL NOT WORK
 		return parentItem()->boundingRect();
 	}
-
-	void hover_in()
-	{
-		m_hover_in->start();
-	}
-
-	void hover_out()
-	{
-		m_hover_out->start();
-	}
-
-	void set_color(const QColor& _color)
+	 
+	void set_color(const QColor& _color) override
 	{
 		QPen pen = AbstractShape::pen();
 		pen.setColor(_color);
 		AbstractShape::set_pen(pen);
 		update();	//add redraw to queue
 	}
-
-private:
-	size_t m_alfa;
-	std::unique_ptr<QPropertyAnimation> m_hover_in, m_hover_out;
-	QColor m_color;
 };
 
-class RoundSelection : public Circle
+class RoundSelection : public Circle, public Selection
 {
 
 public:
-	RoundSelection(QGraphicsObject* _selected_item) : m_alfa(0)
+	RoundSelection(QGraphicsObject* _selected_item)
 	{
 		setParentItem(_selected_item);
 
@@ -91,34 +103,19 @@ public:
 		QPen pen;
 		pen.setWidth(2);
 		AbstractShape::set_pen(pen);
+		AbstractShape::set_brush(Qt::NoBrush);
 	}
 
 	virtual QRectF boundingRect() const override
 	{
-		//		return parentItem()->boundingRect().adjusted(-1, -1, 1, 1);	//don't put this line into _painter->drawRoundRect(boundingRect(), corner_radius, corner_radius); THIS WILL NOT WORK
-		return parentItem()->boundingRect();
+		return parentItem()->boundingRect().adjusted(-1, -1, 1, 1);
 	}
 
-	void hover_in()
-	{
-		m_hover_in->start();
-	}
-
-	void hover_out()
-	{
-		m_hover_out->start();
-	}
-
-	void set_color(const QColor& _color)
+	void set_color(const QColor& _color) override
 	{
 		QPen pen = AbstractShape::pen();
 		pen.setColor(_color);
 		AbstractShape::set_pen(pen);
 		update();	//add redraw to queue
 	}
-
-private:
-	size_t m_alfa;
-	std::unique_ptr<QPropertyAnimation> m_hover_in, m_hover_out;
-	QColor m_color;
 };

@@ -43,6 +43,12 @@ GridMap::GridMap(size_t _px_size, size_t _corner_radius, QGraphicsItem* _parent 
 			else
 			{
 				cells[i][j] = deck->pop_one();
+
+				ActionCell* casted = qobject_cast<ActionCell*>(cells[i][j].get());
+				QObject::connect(casted, &ActionCell::activated_called, [this, casted]
+				{
+					emit cell_clicked(casted);	// to scene
+				});
 			}
 
 			cells[i][j]->setParentItem(this);		//owns by scene

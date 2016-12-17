@@ -1,23 +1,41 @@
 #pragma once
 
-#include "PlayItems.h"
+#include "PlayItem.h"
 #include "ShipItem.h"
+#include "PirateItem.h"
+#include "GameScene.h"
+#include "GridMap.h"
 
 #include <memory>
 
-class Player
+class GameScene;
+class Player : public QObject
 {
-public:
-	Player() : m_coins(0), m_rum(0)
-	{
+	Q_OBJECT
 
-	}
+public:
+	enum class PlayerPos
+	{
+		WEST,
+		NORD,
+		OST,
+		SOUTH
+	};
+
+	Player();
+	void place_on_scene(GameScene* _scene, PlayerPos _pos, GridMap* _cell_grid);
 
 private:
 	size_t m_coins;
 	size_t m_rum;
 
-	std::shared_ptr<ShipItem> m_ship_item;
+	//deleted by scene
+	ShipItem* m_ship_item;
+	PirateItem* m_pirate_item;
 
+	PlayItem* current_item;
+	std::vector<PlayItem*> m_items_vec;
 
+signals:
+	void item_choosed(const QPoint& _cell_on_grid);
 };

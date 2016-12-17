@@ -6,6 +6,7 @@
 
 #include "RoundedRect.h"
 #include "Cell.h"
+#include "ActionCell.h"
 
 class GridMap : public RoundedRect
 {
@@ -28,4 +29,7 @@ private:
 	QPointF grid_to_px(size_t _x, size_t _y) const;
 
 	size_t cell_side_size;
+
+signals:
+	void cell_clicked(ActionCell* _cell);
 };

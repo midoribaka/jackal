@@ -63,7 +63,7 @@ public:
 	ActionCell() : m_move_mask(0)
 	{
 		m_selection = std::make_unique<RectSelection>(this);	
-		m_selection->set_color(QColor(172, 65, 255));
+		m_selection->set_pen(QColor(172, 65, 255));
 
 		m_state_machine = new QStateMachine(this);
 		m_initial_state = new QState(QState::ParallelStates);
