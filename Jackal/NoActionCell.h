@@ -10,17 +10,7 @@ public:
 		RoundedRect::set_image(QPixmap("./Resources/cell_img/corner_cell.png"));
 	}
 
-	void make_ready() override
-	{
-		//do nothing
-	}
-
-	void make_idle() override
-	{
-		//do nothing
-	}
-
-	void activate() override
+	void activate(std::shared_ptr<Player>) override
 	{
 		//do nothing
 	}

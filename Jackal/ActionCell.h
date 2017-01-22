@@ -76,9 +76,10 @@ public:
 		QState* ready = new QState(action_group);
 		QState* activated = new QState(action_group);
 
-		idle->addTransition(this, &ActionCell::make_ready_called, ready);
-		ready->addTransition(this, &ActionCell::make_idle_called, idle);
-		activated->addTransition(this, &ActionCell::make_idle_called, idle);
+		idle->addTransition(this, &Cell::make_ready, ready);
+		ready->addTransition(this, &ActionCell::activated_called, activated);
+		ready->addTransition(this, &Cell::make_idle, idle);
+		activated->addTransition(this, &Cell::make_idle, idle);
 
 		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, ready);
 		mouse_press->setTargetState(activated);
@@ -95,7 +96,7 @@ public:
 
 		QObject::connect(activated, &QState::entered, [this]
 		{
-			emit activated_called();	// -> to scene
+			emit activated_called();	// -> to grid_map -> to scene
 		});
 
 		action_group->setInitialState(idle);
@@ -105,25 +106,7 @@ public:
 	{
 	}
 
-	void make_ready() override
-	{
-		emit make_ready_called();
-	}
-
-	void make_idle() override
-	{
-		emit make_idle_called();
-	}
-
-	void activate() override
-	{
-		//called by scene or player or something
-
-		//action!
-
-		//
-		emit make_idle();
-	}
+	void activate(std::shared_ptr<Player> _player) override = 0;
 
 	int mask() const override
 	{
@@ -190,7 +173,5 @@ private:
 	std::unique_ptr<RectSelection> m_selection;
 
 signals:
-	void make_ready_called();
-	void make_idle_called();
 	void activated_called();
 };

@@ -3,6 +3,8 @@
 #include "RoundedRect.h"
 #include <memory>
 
+#include "Player.h"
+
 class Cell : public RoundedRect
 {
 	Q_OBJECT
@@ -20,11 +22,13 @@ public:
 
 	//todo bad because noactioncell does not need make_idle, make_ready, mask, activate, set_grid_pos
 	virtual void set_grid_pos(const QPoint& _pos) = 0;
-	virtual void make_idle() = 0;
-	virtual void make_ready() = 0;
-	virtual void activate() = 0;
+	virtual void activate(std::shared_ptr<Player> _player) = 0;
 	virtual int mask() const = 0;
 
 protected:
 	QPoint m_grid_pos;
+
+signals:
+	void make_ready();
+	void make_idle();
 };

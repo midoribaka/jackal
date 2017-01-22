@@ -18,41 +18,44 @@ class PlayItem : public AbstractShape
 public:
 	PlayItem()
 	{
+		/*
+		ready_state -> (mousePress) -> selected_state
+
+		selected_state -> (scene signal: make_ready) -> ready_state
+		
+		selected_state -> (moving animation finished signal) -> idle_state
+		*/
+
 		m_state_machine = new QStateMachine(this);
 
-		QState* ready_state = new QState(m_state_machine);
-		QState* choosed_state = new QState(m_state_machine);
 		QState* idle_state = new QState(m_state_machine);
+		QState* ready_state = new QState(m_state_machine);
+		QState* selected_state = new QState(m_state_machine);
+		QState* active_state = new QState(m_state_machine);
 
 		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, ready_state);
-		mouse_press->setTargetState(choosed_state);
+		mouse_press->setTargetState(selected_state);
 
-		QObject::connect(choosed_state, &QState::entered, [this]
+		idle_state->addTransition(this, &PlayItem::make_ready, ready_state);
+		selected_state->addTransition(this, &PlayItem::make_ready, ready_state);
+
+		QObject::connect(selected_state, &QState::entered, [this]
 		{
+			emit selected();				//emit signal to scene to deselect all another items by calling make_ready
 			m_selection->hover_in();
 		});
 
-		QObject::connect(choosed_state, &QState::exited, [this]
+		QObject::connect(selected_state, &QState::exited, [this]
 		{
 			m_selection->hover_out();
 		});
 
-		choosed_state->addTransition(this, &PlayItem::make_ready, ready_state);
-		QObject::connect(choosed_state, &QState::entered, this, &PlayItem::choosed);	//emit signal to scene to deselect all another items 
-
 		//Moving animation
 		m_moving = std::make_unique<QPropertyAnimation>(this, "position");
 		m_moving->setEasingCurve(QEasingCurve::InOutQuart);
+		selected_state->addTransition(m_moving.get(), &QPropertyAnimation::finished, idle_state);
 
-		QObject::connect(m_moving.get(), &QPropertyAnimation::finished, this, &PlayItem::finish);
-		choosed_state->addTransition(this, &PlayItem::finish, idle_state);
-
-		m_state_machine->setInitialState(ready_state);
-	}
-
-	void unselect()	// calling by scene
-	{
-		emit make_ready();	// -> to ready state
+		m_state_machine->setInitialState(idle_state);
 	}
 
 	QRectF boundingRect() const override
@@ -65,12 +68,8 @@ public:
 	void move_to(const QPointF& _pos)
 	{
 		QPointF current = pos();
-
-		int s1 = _pos.x() - current.x();
-		int s2 = _pos.y() - current.y();
-		int mod = sqrt(s1*s1 + s2*s2);
-
-		m_moving->setDuration(1000*mod / 50);	//50px/1sec	//todo no constant
+		QPointF d = _pos - current;
+		m_moving->setDuration(1000 * hypot(d.x(), d.y()) / 50);	//50px/1sec	//todo no constant
 
 		m_moving->setStartValue(pos());
 		m_moving->setEndValue(_pos);
@@ -89,7 +88,6 @@ public:
 
 	virtual ~PlayItem()
 	{
-
 	}
 
 	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override = 0;
@@ -111,7 +109,7 @@ private:
 	std::unique_ptr<QPropertyAnimation> m_moving;
 
 signals :
-	void choosed();
+	void selected();
 	void make_ready();
-	void finish();
+	void make_idle();
 };

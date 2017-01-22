@@ -17,7 +17,6 @@ public:
 		m_state_machine->start();
 	}
 
-
 	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override
 	{
 		_painter->setBrush(AbstractShape::m_brush);
