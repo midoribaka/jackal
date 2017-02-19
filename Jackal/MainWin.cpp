@@ -16,25 +16,24 @@ MainWin::MainWin(QWidget *_parent) : QMainWindow(_parent)
 	}
 
 	QWidget* main_widget = new QWidget();
-	QHBoxLayout* main_layout = new QHBoxLayout();
+	QVBoxLayout* main_layout = new QVBoxLayout();
 	main_layout->setContentsMargins(padding, padding, padding, padding);
 	main_layout->setSpacing(spacing);
 
 	//
-
-	QWidget* some_left = new QWidget();
+	QWidget* top = new QWidget();
 	view_widget = new QGraphicsView();
-	QWidget* some_right = new QWidget();
+	QWidget* bottom = new QWidget();
 
-	some_left->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	view_widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-	some_right->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	top->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	view_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	bottom->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-	main_layout->addWidget(some_left);
+	main_layout->addWidget(top);
 	main_layout->addWidget(view_widget, Qt::AlignCenter);
-	main_layout->addWidget(some_right);
+	main_layout->addWidget(bottom);
 
-	view_widget->setScene(new GameScene(active_screen_h, view_widget));
+	view_widget->setScene(new GameScene(active_screen_w, view_widget));
 	view_widget->setRenderHints(QPainter::Antialiasing| QPainter::SmoothPixmapTransform| QPainter::TextAntialiasing);
 
 	main_widget->setLayout(main_layout);

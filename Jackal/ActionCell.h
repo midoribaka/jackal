@@ -72,6 +72,7 @@ public:
 		m_state_machine->setInitialState(m_initial_state);
 
 		QState* action_group = new QState(m_initial_state);
+
 		QState* idle = new QState(action_group);
 		QState* ready = new QState(action_group);
 		QState* activated = new QState(action_group);
@@ -84,15 +85,7 @@ public:
 		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, ready);
 		mouse_press->setTargetState(activated);
 
-		QObject::connect(ready, &QState::entered, [this]
-		{
-			m_selection->hover_in();
-		});
-
-		QObject::connect(ready, &QState::exited, [this]
-		{
-			m_selection->hover_out();
-		});
+		m_selection->bind_to_state(ready);
 
 		QObject::connect(activated, &QState::entered, [this]
 		{

@@ -16,8 +16,6 @@ public:
 
 	void activate(std::shared_ptr<Player> _player) override
 	{
-		_player->move_selected_item_to(pos());
-		_player->set_selected_item_grid_pos(grid_pos());
 		emit make_idle();
 	}
 };

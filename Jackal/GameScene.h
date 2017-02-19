@@ -5,70 +5,36 @@
 
 #include <QGraphicsScene>
 
-#include "GridMap.h"
-#include "Player.h"
+#include "IGridMap.h"
+#include "IPlayer.h"
+#include "IPlayerQueue.h"
 
 class GameScene : public QGraphicsScene
 {
 	Q_OBJECT
 
-	const size_t corner_radius = 0;
-
-	enum class PlayerPos
-	{
-		WEST,
-		NORD,
-		OST,
-		SOUTH
-	};
-
 public:
 	GameScene(size_t _side_size, QObject* _parent = 0) : QGraphicsScene(_parent)
 	{
-		//Create grid
-		m_grid_map = new GridMap(_side_size, corner_radius);
-		addItem(m_grid_map);			//owns by QGraphicsScene
+		IGridMap* m_grid_map = IGridMap::create(_side_size, this);	//owns by this
 
-		//Create player	
-		std::shared_ptr<Player> current_player = create_player(PlayerPos::SOUTH);
+		std::shared_ptr<IPlayer> nord_player = IPlayer::create(m_grid_map, PlayerPos::NORD, "Den");
+		std::shared_ptr<IPlayer> east_player = IPlayer::create(m_grid_map, PlayerPos::EAST, "Luba");
+		std::shared_ptr<IPlayer> south_player = IPlayer::create(m_grid_map, PlayerPos::SOUTH, "Nata");
+		std::shared_ptr<IPlayer> west_player = IPlayer::create(m_grid_map, PlayerPos::WEST, "Oleg");
 
-		QObject::connect(m_grid_map, &GridMap::cell_clicked, [current_player](ActionCell* _activated_cell)
-		{
-			_activated_cell->activate(current_player);
-		});
+		m_player_queue = IPlayerQueue::create();
 
-		QObject::connect(current_player.get(), &Player::item_choosed, m_grid_map, &GridMap::select_cells_around);
+		m_player_queue->set_nord_player(nord_player);
+		m_player_queue->set_east_player(east_player);
+		m_player_queue->set_south_player(south_player);
+		m_player_queue->set_west_player(west_player);
 
 		//см ссылку, иначе ничё не пашет
 		//http://stackoverflow.com/questions/10059721/qt-qstatemachine-sync-problems-initial-state-not-set-on-started-signal
-		QMetaObject::invokeMethod(current_player.get(), "choose", Qt::QueuedConnection);
+		QMetaObject::invokeMethod(south_player.get(), "select", Qt::QueuedConnection);
 	}
 
 private:
-	std::shared_ptr<Player> create_player(PlayerPos _pos)
-	{
-		std::shared_ptr<Player> player = std::make_shared<Player>();
-		std::vector<PlayItem*> player_items = player->items();
-
-		QPoint pt;
-		switch (_pos)
-		{
-		case PlayerPos::NORD:	pt.setX(6);		pt.setY(0);	break;
-		case PlayerPos::OST:	pt.setX(12);	pt.setY(6);	break;
-		case PlayerPos::WEST:	pt.setX(0);		pt.setY(6);	break;
-		default: /*SOUTH*/		pt.setX(6);		pt.setY(12);
-
-		}
-		for (auto& _it : player_items)
-		{
-			addItem(_it);		//owns by QGraphicsScene 
-			_it->set_grid_pos(pt);
-			_it->setPos(m_grid_map->get_cell(pt)->pos());
-		}
-
-		return player;
-	}
-
-	GridMap* m_grid_map;
-	
+	std::shared_ptr<IPlayerQueue> m_player_queue;
 };

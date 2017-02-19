@@ -31,9 +31,6 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_GameScene.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="Cell.cpp">
-      <Filter>Sources\Cells</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_Cell.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -46,23 +43,41 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_AbstractShape.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_Player.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_PlayItem.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_PlayItem.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Selection.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Selection.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GridMap.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_IPlayer.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerQueue.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Cell.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_IPlayItem.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayItem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Deck.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="GameLogic.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="PirateItem.h">
       <Filter>Headers\PlayItems</Filter>
     </ClInclude>
@@ -84,19 +99,25 @@
     <ClInclude Include="RoundedRect.h">
       <Filter>Headers\Primitives</Filter>
     </ClInclude>
+    <ClInclude Include="IGridMap.h">
+      <Filter>Headers\GridMap</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerQueue.h">
+      <Filter>Headers\PlayerQueue</Filter>
+    </ClInclude>
+    <ClInclude Include="IPlayerQueue.h">
+      <Filter>Headers\PlayerQueue</Filter>
+    </ClInclude>
+    <ClInclude Include="Deck.h">
+      <Filter>Headers\Cells</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="GridMap.h">
-      <Filter>Headers</Filter>
-    </CustomBuild>
     <CustomBuild Include="MainWin.h">
       <Filter>Headers</Filter>
     </CustomBuild>
     <CustomBuild Include="MainWin.qrc">
       <Filter>_rcc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Selection.h">
-      <Filter>Headers</Filter>
     </CustomBuild>
     <CustomBuild Include="GameScene.h">
       <Filter>Headers</Filter>
@@ -110,11 +131,23 @@
     <CustomBuild Include="AbstractShape.h">
       <Filter>Headers\Primitives</Filter>
     </CustomBuild>
-    <CustomBuild Include="Player.h">
-      <Filter>Headers</Filter>
-    </CustomBuild>
     <CustomBuild Include="PlayItem.h">
       <Filter>Headers\PlayItems</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPlayItem.h">
+      <Filter>Headers\PlayItems</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Player.h">
+      <Filter>Headers\Player</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GridMap.h">
+      <Filter>Headers\GridMap</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPlayer.h">
+      <Filter>Headers\Player</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Selection.h">
+      <Filter>Headers\Primitives</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -146,11 +179,17 @@
     <Filter Include="Headers\Cells">
       <UniqueIdentifier>{ce5842ef-30af-4bfd-b474-15f733175602}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\Cells">
-      <UniqueIdentifier>{91adedc2-8da6-4541-8f16-6cd88057488f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headers\Primitives">
       <UniqueIdentifier>{2351b17d-ed72-4f11-a60e-722855b0b3b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Player">
+      <UniqueIdentifier>{6ec98008-ddfb-4a1c-9e77-001cda5d297c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\GridMap">
+      <UniqueIdentifier>{6dfca4bc-ccff-4156-9a7a-41249dea1514}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\PlayerQueue">
+      <UniqueIdentifier>{f7b39450-c1f5-4a5d-a7e9-ec1a6bb65b63}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -4,14 +4,12 @@
 #include <QtWidgets/QMainWindow>
 #include <QGraphicsView>
 
-#include "GridMap.h"
-
 class MainWin : public QMainWindow
 {
 	Q_OBJECT
 
-	const size_t screen_w = 1024;
-	const size_t screen_h = 768;
+	const size_t screen_w = 768;
+	const size_t screen_h = 1024;
 
 	const size_t padding = 6;
 	const size_t spacing = 6;
@@ -23,7 +21,6 @@ public:
 	~MainWin();
 
 	QGraphicsView* view_widget;
-	GridMap* grid_map;
 };
 
 #endif // MAINWIN_H
