@@ -14,22 +14,28 @@ PlayItem::PlayItem()
 	m_state_machine = new QStateMachine(this);		//owns
 
 	QState* idle_state = new QState(m_state_machine);		//не реагирует на эвенты
-	QState* active_state = new QState(m_state_machine);		//может быть выбрана
-	m_selected_state = new QState(m_state_machine);			//выбрана
+	QState* active_state = new QState(m_state_machine);		//может быть выбран
+	m_selected_state = new QState(m_state_machine);			//выбран
 	QState* moving_state = new QState(m_state_machine);		//перемещается
 
 	idle_state->addTransition(this, &IPlayItem::activate, active_state);
-	active_state->addTransition(this, &IPlayItem::make_idle, idle_state);
+	active_state->addTransition(this, &IPlayItem::desactivate, idle_state);
+	m_selected_state->addTransition(this, &IPlayItem::deselect, active_state);
 
 	QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, active_state);
 	mouse_press->setTargetState(m_selected_state);
 
+	QObject::connect(m_selected_state, &QState::entered, this, &IPlayItem::selected);	//emit selected
 
+	QObject::connect(m_selected_state, &QState::entered, []()
+	{
+		int t = 0;
+	});	//emit selected
 
 	//Moving animation
-	m_moving = std::make_unique<QPropertyAnimation>(this, "position");
-	m_moving->setEasingCurve(QEasingCurve::InOutQuart);
-	m_selected_state->addTransition(m_moving.get(), &QPropertyAnimation::finished, idle_state);
+	//m_moving = std::make_unique<QPropertyAnimation>(this, "position");
+	//m_moving->setEasingCurve(QEasingCurve::InOutQuart);
+	//m_selected_state->addTransition(m_moving.get(), &QPropertyAnimation::finished, idle_state);
 
 	m_state_machine->setInitialState(idle_state);
 

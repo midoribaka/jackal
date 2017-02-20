@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "IPlayer.h"
-#include "ShipItem.h"
+#include "IPlayItem.h"
 
 class Player : public IPlayer
 {
@@ -14,7 +14,7 @@ private:
 	size_t m_coins;
 	size_t m_rum;
 
-	std::vector<PlayItem*> m_items_vec;
+	std::vector<IPlayItem*> m_items;
 
 	IGridMap* m_map;
 

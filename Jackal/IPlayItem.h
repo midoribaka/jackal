@@ -21,7 +21,10 @@ public:
 
 signals:
 	//iface
-	void activate();
-	void select();
-	void make_idle();
+	void activate();	//from idle to active state
+	void desactivate();	//from active to idle state
+	void select();		//from active to selected state
+	void deselect();	//from selected to active state
+
+	void selected();
 };

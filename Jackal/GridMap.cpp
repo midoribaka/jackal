@@ -45,35 +45,6 @@ GridMap::GridMap(size_t _px_size, QGraphicsScene* _scene) : m_scene(_scene)
 	}
 }
 
-//void GridMap::select_cells_around(const QPoint& _grid_pos)
-//{
-//	deselect_cells();
-//
-//	const size_t mask_side = 5;
-//	int mask = get_cell(_grid_pos)->mask();
-//
-//	size_t bit_counter = 0;
-//	size_t pow_counter = 0;
-//
-//	while (mask > pow_counter)
-//	{
-//		pow_counter = 1 << bit_counter;		//2^bit_counter
-//
-//		if (mask & pow_counter)
-//		{
-//			size_t i = bit_counter / mask_side;	//floor
-//			size_t j = bit_counter - i * mask_side;
-//
-//			//todo bad. out of range
-//			last_selected_cells.push_back(get_cell(QPoint(_grid_pos.x() - mask_side / 2 + j, _grid_pos.y() - mask_side / 2 + i)));
-//			last_selected_cells.back()->make_ready();
-//		}
-//
-//		++bit_counter;
-//	}
-//}
-
-
 QGraphicsScene* GridMap::scene() const
 {
 	return m_scene;
@@ -82,4 +53,44 @@ QGraphicsScene* GridMap::scene() const
 QPoint GridMap::grid_to_px(const QPoint& _px_pos) const
 {
 	return QPoint(padding_size + cell_side_size / 2 + _px_pos.x()*(spacer_size + cell_side_size), padding_size + cell_side_size / 2 + _px_pos.y()*(spacer_size + cell_side_size));
+}
+
+void GridMap::activate_cells_around(const QPoint& _grid_pos)
+{
+	action_on_cell(_grid_pos, [this](Cell* _cell)
+	{
+		//_cell->activate();	//todo
+	});;
+}
+
+void GridMap::desactivate_cells_around(const QPoint& _grid_pos)
+{
+	action_on_cell(_grid_pos, [this](Cell* _cell)
+	{
+		//_cell->desactivate();	//todo
+	});;
+}
+
+void GridMap::action_on_cell(const QPoint& _grid_pos, const std::function<void(Cell*)>& _fnc)
+{
+	//int mask = get_cell(_grid_pos)->mask();
+	
+	int mask; //todo
+	size_t bit_counter = 0;
+	size_t pow_counter = 0;
+	
+	while (mask > pow_counter)
+	{
+		pow_counter = 1 << bit_counter;		//2^bit_counter
+	
+		if (mask & pow_counter)
+		{
+			size_t i = bit_counter / mask_side;	//floor
+			size_t j = bit_counter - i * mask_side;
+
+			//_fnc(get_cell(QPoint(i, j));
+		}
+	
+		++bit_counter;
+	}
 }
