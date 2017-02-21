@@ -17,7 +17,7 @@ public:
 		gen.seed(rd());
 	}
 
-	std::shared_ptr<Cell> pop_one()
+	ICell* pop_one()
 	{
 		if (deck.empty())
 			return nullptr;
@@ -26,7 +26,7 @@ public:
 
 		size_t num = dis(gen);
 
-		std::shared_ptr<Cell> ptr = deck[num];
+		ICell* ptr = deck[num];
 
 		deck.removeAt(num);
 
@@ -35,14 +35,14 @@ public:
 
 protected:
 	template<typename _T>
-	void create_cell_set(size_t _num)
+	void add_cells(size_t _num)
 	{
 		for (int i = 0; i < _num; ++i)
-			deck.push_back(std::make_shared<_T>());
+			deck.push_back(new _T());
 	}
 
 	std::mt19937 gen;
-	QList<std::shared_ptr<Cell> > deck;
+	QList<ICell*> deck;
 	size_t counter;
 };
 
@@ -51,38 +51,38 @@ class ClassicDeck : public Deck
 public:
 	ClassicDeck()
 	{
-		create_cell_set<EmptyCell>(40);
-		create_cell_set<SideArrowCell>(3);
-		create_cell_set<DiagonalArrowCell>(3);
-		create_cell_set<DoubleSideArrowCell>(3);
-		create_cell_set<DoubleDiagonalArrowCell>(3);
-		create_cell_set<TripleArrowCell>(3);
-		create_cell_set<QuadSideArrowCell>(3);
-		create_cell_set<QuadDiagonalArrowCell>(3);
+		add_cells<EmptyCell>(40);
+		add_cells<SideArrowCell>(3);
+		add_cells<DiagonalArrowCell>(3);
+		add_cells<DoubleSideArrowCell>(3);
+		add_cells<DoubleDiagonalArrowCell>(3);
+		add_cells<TripleArrowCell>(3);
+		add_cells<QuadSideArrowCell>(3);
+		add_cells<QuadDiagonalArrowCell>(3);
 
-		create_cell_set<HorseCell>(2);
-		create_cell_set<Spinning2Cell>(5);
-		create_cell_set<Spinning3Cell>(4);
-		create_cell_set<Spinning4Cell>(2);
-		create_cell_set<Spinning5Cell>(1);
+		add_cells<HorseCell>(2);
+		add_cells<Spinning2Cell>(5);
+		add_cells<Spinning3Cell>(4);
+		add_cells<Spinning4Cell>(2);
+		add_cells<Spinning5Cell>(1);
 
-		create_cell_set<IceCell>(6);
-		create_cell_set<TrapCell>(3);
-		create_cell_set<CanonCell>(2);
-		create_cell_set<FortressCell>(2);
-		create_cell_set<GirlFortressCell>(1);
-		create_cell_set<RumBarrelCell>(4);
+		add_cells<IceCell>(6);
+		add_cells<TrapCell>(3);
+		add_cells<CanonCell>(2);
+		add_cells<FortressCell>(2);
+		add_cells<GirlFortressCell>(1);
+		add_cells<RumBarrelCell>(4);
 
-		create_cell_set<CrocodileCell>(4);
-		create_cell_set<OgreCell>(1);
-		create_cell_set<BalloonCell>(2);
-		create_cell_set<PlaneCell>(1);
+		add_cells<CrocodileCell>(4);
+		add_cells<OgreCell>(1);
+		add_cells<BalloonCell>(2);
+		add_cells<PlaneCell>(1);
 
-		create_cell_set<Coins1Cell>(5);
-		create_cell_set<Coins2Cell>(5);
-		create_cell_set<Coins3Cell>(3);
-		create_cell_set<Coins4Cell>(2);
-		create_cell_set<Coins5Cell>(1);
+		add_cells<Coins1Cell>(5);
+		add_cells<Coins2Cell>(5);
+		add_cells<Coins3Cell>(3);
+		add_cells<Coins4Cell>(2);
+		add_cells<Coins5Cell>(1);
 	}
 };
 
@@ -91,52 +91,52 @@ class TreasureIslandDeck : public Deck
 public:
 	TreasureIslandDeck()
 	{
-		create_cell_set<EmptyCell>(18);
-		create_cell_set<SideArrowCell>(3);
-		create_cell_set<DiagonalArrowCell>(3);
-		create_cell_set<DoubleSideArrowCell>(3);
-		create_cell_set<DoubleDiagonalArrowCell>(3);
-		create_cell_set<TripleArrowCell>(3);
-		create_cell_set<QuadSideArrowCell>(3);
-		create_cell_set<QuadDiagonalArrowCell>(3);
+		add_cells<EmptyCell>(18);
+		add_cells<SideArrowCell>(3);
+		add_cells<DiagonalArrowCell>(3);
+		add_cells<DoubleSideArrowCell>(3);
+		add_cells<DoubleDiagonalArrowCell>(3);
+		add_cells<TripleArrowCell>(3);
+		add_cells<QuadSideArrowCell>(3);
+		add_cells<QuadDiagonalArrowCell>(3);
 
-		create_cell_set<HorseCell>(2);
-		create_cell_set<Spinning2Cell>(5);
-		create_cell_set<Spinning3Cell>(4);
-		create_cell_set<Spinning4Cell>(2);
-		create_cell_set<Spinning5Cell>(1);
+		add_cells<HorseCell>(2);
+		add_cells<Spinning2Cell>(5);
+		add_cells<Spinning3Cell>(4);
+		add_cells<Spinning4Cell>(2);
+		add_cells<Spinning5Cell>(1);
 
-		create_cell_set<IceCell>(6);
-		create_cell_set<TrapCell>(3);
-		create_cell_set<CanonCell>(2);
-		create_cell_set<FortressCell>(2);
-		create_cell_set<GirlFortressCell>(1);
-		create_cell_set<RumBarrelCell>(4);
+		add_cells<IceCell>(6);
+		add_cells<TrapCell>(3);
+		add_cells<CanonCell>(2);
+		add_cells<FortressCell>(2);
+		add_cells<GirlFortressCell>(1);
+		add_cells<RumBarrelCell>(4);
 
-		create_cell_set<CrocodileCell>(4);
-		create_cell_set<OgreCell>(1);
-		create_cell_set<BalloonCell>(2);
-		create_cell_set<PlaneCell>(1);
+		add_cells<CrocodileCell>(4);
+		add_cells<OgreCell>(1);
+		add_cells<BalloonCell>(2);
+		add_cells<PlaneCell>(1);
 
-		create_cell_set<Coins1Cell>(5);
-		create_cell_set<Coins2Cell>(5);
-		create_cell_set<Coins3Cell>(3);
-		create_cell_set<Coins4Cell>(2);
-		create_cell_set<Coins5Cell>(1);
+		add_cells<Coins1Cell>(5);
+		add_cells<Coins2Cell>(5);
+		add_cells<Coins3Cell>(3);
+		add_cells<Coins4Cell>(2);
+		add_cells<Coins5Cell>(1);
 
-		create_cell_set<TreasureCell>(1);
-		create_cell_set<CarambaCell>(1);
-		create_cell_set<LightHouseCell>(1);
+		add_cells<TreasureCell>(1);
+		add_cells<CarambaCell>(1);
+		add_cells<LightHouseCell>(1);
 
-		create_cell_set<BenGunnCell>(1);
-		create_cell_set<MissionaryCell>(1);
-		create_cell_set<FridayCell>(1);
-		create_cell_set<Rum1Cell>(3);
-		create_cell_set<Rum2Cell>(2);
-		create_cell_set<Rum3Cell>(1);
-		create_cell_set<CaveCell>(4);
-		create_cell_set<EarthquakeCell>(1);
-		create_cell_set<JungleCell>(3);
-		create_cell_set<GrassCell>(2);
+		add_cells<BenGunnCell>(1);
+		add_cells<MissionaryCell>(1);
+		add_cells<FridayCell>(1);
+		add_cells<Rum1Cell>(3);
+		add_cells<Rum2Cell>(2);
+		add_cells<Rum3Cell>(1);
+		add_cells<CaveCell>(4);
+		add_cells<EarthquakeCell>(1);
+		add_cells<JungleCell>(3);
+		add_cells<GrassCell>(2);
 	}
 };

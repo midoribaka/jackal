@@ -1,15 +1,10 @@
 #pragma once
 
-#include "IGridMap.h"
-
-#include <QVector>
-
 #include <memory>
 #include <functional>
 
-#include "Cell.h"
-#include "ActionCell.h"
-#include "NoActionCell.h"
+#include "IGridMap.h"
+#include "ICell.h"
 #include "Deck.h"
 
 class GridMap : public IGridMap
@@ -30,12 +25,9 @@ public:
 	void desactivate_cells_around(const QPoint& _grid_pos) override;
 
 private:
-	void action_on_masked_cell(const QPoint& _grid_pos, const std::function<void(Cell*)>& _fnc);
+	void action_on_masked_cell(const QPoint& _grid_pos, const std::function<void(ICell*)>& _fnc);
 
 	size_t cell_side_size;
-	QVector<QVector<std::shared_ptr<Cell> > > cells;
+	std::vector<std::vector<ICell*> > m_cells;
 	QGraphicsScene* m_scene;
-
-signals:
-	void cell_clicked(ActionCell* _cell);
 };

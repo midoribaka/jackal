@@ -86,16 +86,6 @@ public:
 		m_state_machine->start();
 	}
 
-	void activate(std::shared_ptr<Player> _player) override
-	{
-		//called by scene or player or something
-
-		//action!
-
-		//
-		emit make_idle();
-	}
-
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *_event) override
 	{

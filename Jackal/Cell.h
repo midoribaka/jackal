@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <bitset>
 
 #include "Player.h"
 #include "ICell.h"
@@ -16,18 +17,10 @@ public:
 	Cell();
 
 	virtual ~Cell();
-	QPoint grid_pos() const;
-	void set_side_size(size_t _size);
-
-	//todo bad because noactioncell does not need make_idle, make_ready, mask, activate, set_grid_pos
-	virtual void set_grid_pos(const QPoint& _pos) = 0;
-	virtual void activate(std::shared_ptr<Player> _player) = 0;
-	virtual int mask() const = 0;
+	void set_side_size(size_t _side) override;
+	BitMask mask() const  override;
+	void set_mask(BitMask _mask) override;
 
 protected:
-	QPoint m_grid_pos;
-
-signals:
-	void make_ready();
-	void make_idle();
+	BitMask m_mask;
 };
