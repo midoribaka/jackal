@@ -92,6 +92,7 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_GridMap.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ICell.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_IPlayer.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_IPlayItem.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_MainWin.cpp">
@@ -149,7 +150,10 @@
   <ItemGroup>
     <CustomBuild Include="ActionCell.h" />
     <CustomBuild Include="AbstractShape.h" />
+    <ClInclude Include="CenteredAbstractShape.h" />
+    <ClInclude Include="CenteredRoundedRect.h" />
     <ClInclude Include="Circle.h" />
+    <CustomBuild Include="ICell.h" />
     <ClInclude Include="IGridMap.h" />
     <CustomBuild Include="IPlayer.h" />
     <ClInclude Include="IPlayerQueue.h" />

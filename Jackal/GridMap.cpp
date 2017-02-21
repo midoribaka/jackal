@@ -57,7 +57,7 @@ QPoint GridMap::grid_to_px(const QPoint& _px_pos) const
 
 void GridMap::activate_cells_around(const QPoint& _grid_pos)
 {
-	action_on_cell(_grid_pos, [this](Cell* _cell)
+	action_on_masked_cell(_grid_pos, [this](Cell* _cell)
 	{
 		//_cell->activate();	//todo
 	});;
@@ -65,13 +65,13 @@ void GridMap::activate_cells_around(const QPoint& _grid_pos)
 
 void GridMap::desactivate_cells_around(const QPoint& _grid_pos)
 {
-	action_on_cell(_grid_pos, [this](Cell* _cell)
+	action_on_masked_cell(_grid_pos, [this](Cell* _cell)
 	{
 		//_cell->desactivate();	//todo
 	});;
 }
 
-void GridMap::action_on_cell(const QPoint& _grid_pos, const std::function<void(Cell*)>& _fnc)
+void GridMap::action_on_masked_cell(const QPoint& _grid_pos, const std::function<void(Cell*)>& _fnc)
 {
 	//int mask = get_cell(_grid_pos)->mask();
 	

@@ -42,13 +42,6 @@ PlayItem::PlayItem()
 	m_state_machine->start();
 }
 
-QRectF PlayItem::boundingRect() const
-{
-	//origin at center
-	QRectF br = AbstractShape::boundingRect();
-	return br.translated(-br.width() / 2, -br.height() / 2);
-}
-
 void PlayItem::move_to(const QPointF& _pos)
 {
 	QPointF current = pos();

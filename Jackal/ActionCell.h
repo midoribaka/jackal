@@ -159,7 +159,7 @@ protected:
 	{
 		auto wrapped = new QStateMachine::WrappedEvent(this, new QMouseEvent(QEvent::MouseButtonPress, _event->pos(), _event->button(), _event->buttons(), _event->modifiers()));
 		m_state_machine->postEvent(wrapped);	//will be deleted inside
-		RoundedRect::mousePressEvent(_event);
+		CenteredRoundedRect::mousePressEvent(_event);
 	}
 
 private:

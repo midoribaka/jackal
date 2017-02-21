@@ -20,8 +20,6 @@ class PlayItem : public IPlayItem
 public:
 	PlayItem();
 
-	QRectF boundingRect() const override;
-
 	void move_to(const QPointF& _pos);
 
 	virtual ~PlayItem();

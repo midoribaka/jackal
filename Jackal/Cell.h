@@ -1,11 +1,11 @@
 #pragma once
 
-#include "RoundedRect.h"
 #include <memory>
 
 #include "Player.h"
+#include "ICell.h"
 
-class Cell : public RoundedRect
+class Cell : public ICell
 {
 	Q_OBJECT
 	Q_PROPERTY(qreal zValue READ zValue WRITE setZValue)
@@ -16,7 +16,6 @@ public:
 	Cell();
 
 	virtual ~Cell();
-	virtual QRectF boundingRect() const override;
 	QPoint grid_pos() const;
 	void set_side_size(size_t _size);
 

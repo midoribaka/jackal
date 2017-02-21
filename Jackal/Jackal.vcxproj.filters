@@ -76,6 +76,9 @@
     <ClCompile Include="PlayItem.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ICell.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PirateItem.h">
@@ -110,6 +113,12 @@
     </ClInclude>
     <ClInclude Include="Deck.h">
       <Filter>Headers\Cells</Filter>
+    </ClInclude>
+    <ClInclude Include="CenteredAbstractShape.h">
+      <Filter>Headers\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="CenteredRoundedRect.h">
+      <Filter>Headers\Primitives</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +157,9 @@
     </CustomBuild>
     <CustomBuild Include="Selection.h">
       <Filter>Headers\Primitives</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ICell.h">
+      <Filter>Headers\Cells</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

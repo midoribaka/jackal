@@ -10,7 +10,7 @@ class SeaCell : public ActionCell
 public:
 	SeaCell()
 	{
-		RoundedRect::set_image(QPixmap("./Resources/cell_img/cell_sea.png"));
+		CenteredRoundedRect::set_image(QPixmap("./Resources/cell_img/cell_sea.png"));
 		m_state_machine->start();	//todo baaad
 	}
 
@@ -62,7 +62,7 @@ public:
 protected:
 	virtual void set_image(const QPixmap& _image) override
 	{
-		RoundedRect::set_image(_image.transformed(QTransform().rotate(angle)));
+		CenteredRoundedRect::set_image(_image.transformed(QTransform().rotate(angle)));
 	}
 
 protected:

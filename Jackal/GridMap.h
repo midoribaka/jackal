@@ -30,7 +30,7 @@ public:
 	void desactivate_cells_around(const QPoint& _grid_pos) override;
 
 private:
-	void action_on_cell(const QPoint& _grid_pos, const std::function<void(Cell*)>& _fnc);
+	void action_on_masked_cell(const QPoint& _grid_pos, const std::function<void(Cell*)>& _fnc);
 
 	size_t cell_side_size;
 	QVector<QVector<std::shared_ptr<Cell> > > cells;
