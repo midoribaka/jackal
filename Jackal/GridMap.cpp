@@ -24,25 +24,38 @@ GridMap::GridMap(size_t _px_size, QGraphicsScene* _scene) : m_scene(_scene)
 
 	std::unique_ptr<TreasureIslandDeck> deck(new TreasureIslandDeck());
 
-	for (int i = 0; i < rn; ++i)
+	/*
+	0,12
+	y
+	^
+	|
+	|
+	|
+	|
+	0,0------------->x 12,0	
+	*/
+	for (int x = 0; x < rn; ++x)
 	{
-		m_cells[i].resize(rn);
+		m_cells[x].resize(rn);
 
-		for (int j = 0; j < rn; ++j)
+		for (int y = 0; y < rn; ++y)
 		{
-			if ((i == 0) || (j == 0) || (i == rn - 1) || (j == rn - 1))
-				m_cells[i][j] = ICell::create(CellType::SEA);
-			else if (((i == 1) && (j == 1)) || ((i == 1) && (j == rn - 2)) || ((i == rn - 2) && (j == 1)) || ((i == rn - 2) && (j == rn - 2)))
-				m_cells[i][j] = ICell::create(CellType::CORNER);
+			if ((y == 0) || (x == 0) || (y == rn - 1) || (x == rn - 1))
+				m_cells[x][y] = ICell::create(CellType::SEA);
+			else if (((y == 1) && (x == 1)) || ((y == 1) && (x == rn - 2)) || ((y == rn - 2) && (x == 1)) || ((y == rn - 2) && (x == rn - 2)))
+				m_cells[x][y] = ICell::create(CellType::CORNER);
 			else
-				m_cells[i][j] = deck->pop_one();
+				m_cells[x][y] = deck->pop_one();
 
-			m_cells[i][j]->setParentItem(this);			//owns
-			m_cells[i][j]->set_side_size(cell_side_size);
-			m_cells[i][j]->setPos(grid_to_px(QPoint(j, i)));
+			m_cells[x][y]->setParentItem(this);			//owns
+			m_cells[x][y]->set_side_size(cell_side_size);
+			m_cells[x][y]->setPos(grid_to_px(QPoint(x, y)));
 		}
-
 	}
+
+
+	m_cells[1][6]->set_mask(mask::left_right());
+	activate_cells_around(QPoint(1,6));
 }
 
 QGraphicsScene* GridMap::scene() const
@@ -73,18 +86,15 @@ void GridMap::desactivate_cells_around(const QPoint& _grid_pos)
 
 void GridMap::action_on_masked_cell(const QPoint& _grid_pos, const std::function<void(ICell*)>& _fnc)
 {
-	BitMask cmask = m_cells[_grid_pos.x()][_grid_pos.y()]->mask();
+	Mask cmask = m_cells[_grid_pos.x()][_grid_pos.y()]->mask();
 	
 	size_t size = cmask.size();
 
-	for (int i = 0; i < size; ++i)
+	for (auto& it : cmask)
 	{
-		if (cmask.test(i))
-		{
-			size_t y = i / mask_side;	//floor
-			size_t x = i - y * mask_side;
+		size_t x = _grid_pos.x() + it.first;
+		size_t y = _grid_pos.y() + it.second;
 
-			_fnc(m_cells[x][y]);
-		}
+		_fnc(m_cells[x][y]);
 	}
 }

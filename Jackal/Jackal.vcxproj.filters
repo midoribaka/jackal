@@ -79,6 +79,9 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_ICell.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="Mask.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PirateItem.h">
@@ -119,6 +122,9 @@
     </ClInclude>
     <ClInclude Include="CenteredRoundedRect.h">
       <Filter>Headers\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Mask.h">
+      <Filter>Headers\Cells</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

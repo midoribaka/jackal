@@ -128,6 +128,7 @@
     <ClCompile Include="GridMap.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWin.cpp" />
+    <ClCompile Include="Mask.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerQueue.cpp" />
     <ClCompile Include="PlayItem.cpp" />
@@ -158,6 +159,7 @@
     <CustomBuild Include="IPlayer.h" />
     <ClInclude Include="IPlayerQueue.h" />
     <CustomBuild Include="IPlayItem.h" />
+    <ClInclude Include="Mask.h" />
     <ClInclude Include="NoActionCell.h" />
     <ClInclude Include="OtherCells.h" />
     <ClInclude Include="PlayerQueue.h" />

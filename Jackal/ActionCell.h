@@ -32,18 +32,13 @@ public:
 		QState* action_group = new QState(m_initial_state);
 
 		QState* idle = new QState(action_group);
-		QState* ready = new QState(action_group);
-		QState* activated = new QState(action_group);
+		QState* active = new QState(action_group);
+		QState* selected = new QState(action_group);
 
-		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, ready);
-		mouse_press->setTargetState(activated);
+		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, active);
+		mouse_press->setTargetState(selected);
 
-		m_selection->bind_to_state(ready);
-
-		QObject::connect(activated, &QState::entered, [this]
-		{
-			emit activated_called();	// -> to grid_map -> to scene
-		});
+		m_selection->bind_to_state(active);
 
 		action_group->setInitialState(idle);
 	}
@@ -65,7 +60,4 @@ protected:
 
 private:
 	std::unique_ptr<RectSelection> m_selection;
-
-signals:
-	void activated_called();
 };

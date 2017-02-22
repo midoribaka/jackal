@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include <bitset>
 
 #include "Player.h"
 #include "ICell.h"
@@ -18,9 +17,9 @@ public:
 
 	virtual ~Cell();
 	void set_side_size(size_t _side) override;
-	BitMask mask() const  override;
-	void set_mask(BitMask _mask) override;
+	const Mask&  mask() const  override;
+	void set_mask(const Mask& _mask) override;
 
 protected:
-	BitMask m_mask;
+	Mask m_mask;
 };

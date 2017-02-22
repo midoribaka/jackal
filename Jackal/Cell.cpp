@@ -14,7 +14,7 @@ ICell* ICell::create(CellType _ctype)
 	}
 }
 
-Cell::Cell() : m_mask(0)
+Cell::Cell()
 {
 	setZValue(default_z_value);
 }
@@ -28,12 +28,12 @@ void Cell::set_side_size(size_t _side)
 	CenteredRoundedRect::set_draw_rect(QRectF(0, 0, _side, _side));
 }
 
-BitMask Cell::mask() const
+const Mask& Cell::mask() const
 {
 	return m_mask;
 }
 
-void Cell::set_mask(BitMask _mask)
+void Cell::set_mask(const Mask& _mask)
 {
 	m_mask = _mask;
 }

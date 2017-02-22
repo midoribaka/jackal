@@ -3,6 +3,8 @@
 #include "ActionCell.h"
 #include "FlippableCell.h"
 
+#include "Mask.h"
+
 #include <random>
 
 class SeaCell : public ActionCell
@@ -12,9 +14,10 @@ public:
 	{
 		CenteredRoundedRect::set_image(QPixmap("./Resources/cell_img/cell_sea.png"));
 
+		m_mask = mask::cross();
+
 		m_state_machine->start();	//todo baaad
 	}
-
 };
 
 class EmptyCell : public FlippableCell

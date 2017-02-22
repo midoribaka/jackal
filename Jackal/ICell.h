@@ -2,15 +2,13 @@
 
 #include "CenteredRoundedRect.h"
 
-#include <bitset>
+#include "Mask.h"
 
 enum class CellType
 {
 	CORNER,
 	SEA
 };
-
-using BitMask = std::bitset<169>;
 
 class ICell : public CenteredRoundedRect
 {
@@ -19,9 +17,9 @@ class ICell : public CenteredRoundedRect
 public:
 	static ICell* create(CellType _ctype);
 
-	virtual BitMask mask() const = 0;
+	virtual const Mask& mask() const = 0;
 
-	virtual void set_mask(BitMask _mask) = 0;
+	virtual void set_mask(const Mask& _mask) = 0;
 
 	virtual void set_side_size(size_t _side) = 0;
 

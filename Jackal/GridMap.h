@@ -13,8 +13,6 @@ class GridMap : public IGridMap
 
 	const size_t rows_num = 13;
 	const size_t spacer_size = 4;
-	const size_t mask_side = 5;
-
 	size_t padding_size = 2;	//адаптивный размер полей сетки под разрешение экрана
 
 public:
