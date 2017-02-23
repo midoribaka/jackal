@@ -37,7 +37,7 @@ public:
 
 		m_hover_out->setStartValue(0.9);
 		m_hover_out->setEndValue(0.0);
-		m_hover_out->setDuration(400);
+		m_hover_out->setDuration(200);
 		m_hover_out->setEasingCurve(QEasingCurve::InOutQuad);
 	}
 	virtual ~Selection()
@@ -52,6 +52,20 @@ public:
 		update();	//add redraw to queue
 	}
 
+	void bind_to_state(QState* _state)
+	{
+		QObject::connect(_state, &QState::entered, this, &Selection::hover_in);
+		QObject::connect(_state, &QState::exited, this, &Selection::hover_out);
+	}
+
+	QRectF boundingRect() const override
+	{
+		return parentItem()->boundingRect().adjusted(-1, -1, 1, 1);	//don't put this line into _painter->drawRoundRect(boundingRect(), corner_radius, corner_radius); THIS WILL NOT WORK
+	}
+
+	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override = 0;
+
+public slots:
 	void hover_in()
 	{
 		emit begin_hover_in();
@@ -63,26 +77,6 @@ public:
 		emit begin_hover_out();
 		m_hover_out->start();
 	}
-
-	void bind_to_state(QState* _state)
-	{
-		QObject::connect(_state, &QState::entered, [this]
-		{
-			hover_in();
-		});
-
-		QObject::connect(_state, &QState::exited, [this]
-		{
-			hover_out();
-		});
-	}
-
-	QRectF boundingRect() const override
-	{
-		return parentItem()->boundingRect().adjusted(-1, -1, 1, 1);	//don't put this line into _painter->drawRoundRect(boundingRect(), corner_radius, corner_radius); THIS WILL NOT WORK
-	}
-
-	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override = 0;
 
 protected:
 	size_t m_alfa;

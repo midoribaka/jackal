@@ -33,5 +33,6 @@ signals:
 	void select();		//from active to selected
 
 	//signals
+	void selected();
 
 };

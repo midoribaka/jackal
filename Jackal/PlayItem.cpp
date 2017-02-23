@@ -27,11 +27,6 @@ PlayItem::PlayItem()
 
 	QObject::connect(m_selected_state, &QState::entered, this, &IPlayItem::selected);	//emit selected
 
-	QObject::connect(m_selected_state, &QState::entered, []()
-	{
-		int t = 0;
-	});	//emit selected
-
 	//Moving animation
 	//m_moving = std::make_unique<QPropertyAnimation>(this, "position");
 	//m_moving->setEasingCurve(QEasingCurve::InOutQuart);

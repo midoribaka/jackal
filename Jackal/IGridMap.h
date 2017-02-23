@@ -12,7 +12,8 @@ public:
 
 	virtual ~IGridMap() {};
 
-	virtual QPoint grid_to_px(const QPoint& _px_pos) const = 0;
+	virtual QPoint grid_to_px(const QPoint& _grid_pos) const = 0;
+	virtual QPoint px_to_grid(const QPoint& _px_pos) const = 0;
 
 	virtual QGraphicsScene* scene() const = 0;	//no shared_ptr for QGraphicItems
 

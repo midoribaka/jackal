@@ -21,7 +21,7 @@ public:
 	ActionCell()
 	{
 		m_selection = std::make_unique<RectSelection>(this);	
-		m_selection->set_pen(QColor(172, 65, 255));
+		m_selection->set_color(QColor(255, 0, 0));
 
 		m_state_machine = new QStateMachine(this);
 		m_initial_state = new QState(QState::ParallelStates);
@@ -34,6 +34,9 @@ public:
 		QState* idle = new QState(action_group);
 		QState* active = new QState(action_group);
 		QState* selected = new QState(action_group);
+
+		idle->addTransition(this, &ActionCell::activate, active);
+		active->addTransition(this, &ActionCell::desactivate, idle);
 
 		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, active);
 		mouse_press->setTargetState(selected);

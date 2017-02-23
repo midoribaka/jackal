@@ -8,7 +8,7 @@ std::shared_ptr<IPlayer> IPlayer::create(IGridMap* _map, PlayerPos _pos, const Q
 	return std::make_shared<Player>(_map, _pos, _name);
 }
 
-Player::Player(IGridMap* _map, PlayerPos _pos, const QString& _name) : m_coins(0), m_rum(0), m_map(_map), m_name(_name)
+Player::Player(IGridMap* _map, PlayerPos _pos, const QString& _name) : m_coins(0), m_rum(0), m_map(_map), m_name(_name), m_last_selected(nullptr)
 {
 	//items
 	IPlayItem* ship = IPlayItem::create(ItemType::SHIP);		//todo hardcode
@@ -16,11 +16,11 @@ Player::Player(IGridMap* _map, PlayerPos _pos, const QString& _name) : m_coins(0
 	IPlayItem* ship2;
 	switch (_pos)
 	{
-	case PlayerPos::NORD:	ship->setPos(m_map->grid_to_px(QPoint(6, 0))); break;	//todo hardcode
+	case PlayerPos::NORD:	ship->setPos(m_map->grid_to_px(QPoint(6, 12))); break;	//todo hardcode
 	case PlayerPos::EAST:	ship->setPos(m_map->grid_to_px(QPoint(12, 6)));	break;
-	case PlayerPos::SOUTH:	ship->setPos(m_map->grid_to_px(QPoint(6, 12)));
+	case PlayerPos::SOUTH:	ship->setPos(m_map->grid_to_px(QPoint(6, 0)));
 		ship2 = IPlayItem::create(ItemType::SHIP);						//just test
-		ship2->setPos(m_map->grid_to_px(QPoint(5, 12))); 
+		ship2->setPos(m_map->grid_to_px(QPoint(5, 0))); 
 		m_items.push_back(ship2);	
 		break;
 	case PlayerPos::WEST:	ship->setPos(m_map->grid_to_px(QPoint(0, 6)));	break;
@@ -35,11 +35,17 @@ Player::Player(IGridMap* _map, PlayerPos _pos, const QString& _name) : m_coins(0
 
 		QObject::connect(it, &IPlayItem::selected, [it, this]()		//перевести все невыбранные item's в состояние active
 		{
-			for (auto& it2 : m_items)
+			//убираем старые клетки
+			if (m_last_selected)
 			{
-				if (it2 != it)
-					it2->deselect();
+				m_map->desactivate_cells_around(m_last_point);
+				m_last_selected->deselect();
 			}
+				
+			//выделяем новые клетки
+			m_last_selected = it;
+			m_last_point = m_map->px_to_grid(it->pos().toPoint());
+			m_map->activate_cells_around(m_last_point);
 		});
 	}
 
@@ -68,6 +74,7 @@ Player::Player(IGridMap* _map, PlayerPos _pos, const QString& _name) : m_coins(0
 	QObject::connect(idle_state, &QState::entered, [this]
 	{
 		qDebug() << "Player " + m_name + " in idle_state";
+		m_last_selected = nullptr;
 	});
 
 	idle_state->addTransition(this, &IPlayer::select, making_turn_state);

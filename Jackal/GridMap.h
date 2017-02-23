@@ -18,7 +18,8 @@ class GridMap : public IGridMap
 public:
 	GridMap(size_t _px_size, QGraphicsScene* _scene);
 	QGraphicsScene* scene() const override;
-	QPoint grid_to_px(const QPoint& _px_pos) const override;
+	QPoint grid_to_px(const QPoint& _grid_pos) const override;
+	QPoint px_to_grid(const QPoint& _px_pos) const override;
 	void activate_cells_around(const QPoint& _grid_pos) override;
 	void desactivate_cells_around(const QPoint& _grid_pos) override;
 

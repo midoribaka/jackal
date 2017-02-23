@@ -34,6 +34,8 @@ GridMap::GridMap(size_t _px_size, QGraphicsScene* _scene) : m_scene(_scene)
 	|
 	0,0------------->x 12,0	
 	*/
+
+	//Создание клеток
 	for (int x = 0; x < rn; ++x)
 	{
 		m_cells[x].resize(rn);
@@ -53,9 +55,37 @@ GridMap::GridMap(size_t _px_size, QGraphicsScene* _scene) : m_scene(_scene)
 		}
 	}
 
+	//Коррекция масок todo сделать всё в одном цикле
+	for (int x = 0; x < rn; ++x)
+	{
+		for (int y = 0; y < rn; ++y)
+		{
+			Mask cmask;
 
-	m_cells[1][6]->set_mask(mask::left_right());
-	activate_cells_around(QPoint(1,6));
+			if (y == 0 || y == 12)
+			{
+				if (x == 1)
+					cmask = mask::right();
+				else if (x == 11)
+					cmask = mask::left();
+				else
+					cmask = mask::left_right();
+			}
+
+			if (x == 0 || x == 12)
+			{
+				if (y == 1)
+					cmask = mask::top();
+				else if (y == 11)
+					cmask = mask::bottom();
+				else
+					cmask = mask::top_bottom();
+			}
+
+			m_cells[x][y]->set_mask(cmask);
+		}
+	}
+
 }
 
 QGraphicsScene* GridMap::scene() const
@@ -63,16 +93,21 @@ QGraphicsScene* GridMap::scene() const
 	return m_scene;
 }
 
-QPoint GridMap::grid_to_px(const QPoint& _px_pos) const
+QPoint GridMap::grid_to_px(const QPoint& _grid_pos) const
 {
-	return QPoint(padding_size + cell_side_size / 2 + _px_pos.x()*(spacer_size + cell_side_size), padding_size + cell_side_size / 2 + _px_pos.y()*(spacer_size + cell_side_size));
+	return QPoint(padding_size + cell_side_size / 2 + _grid_pos.x()*(spacer_size + cell_side_size), padding_size + cell_side_size / 2 + (rows_num-1-_grid_pos.y())*(spacer_size + cell_side_size));
+}
+
+QPoint GridMap::px_to_grid(const QPoint& _grid_pos) const
+{
+	return QPoint((_grid_pos.x() - padding_size) / (cell_side_size + spacer_size), (rows_num - 1) - (_grid_pos.y() - padding_size) / (cell_side_size + spacer_size));
 }
 
 void GridMap::activate_cells_around(const QPoint& _grid_pos)
 {
 	action_on_masked_cell(_grid_pos, [this](ICell* _cell)
 	{
-		_cell->activate();
+		QMetaObject::invokeMethod(_cell, "activate", Qt::QueuedConnection);
 	});;
 }
 
@@ -80,7 +115,7 @@ void GridMap::desactivate_cells_around(const QPoint& _grid_pos)
 {
 	action_on_masked_cell(_grid_pos, [this](ICell* _cell)
 	{
-		_cell->desactivate();
+		QMetaObject::invokeMethod(_cell, "desactivate", Qt::QueuedConnection);
 	});;
 }
 

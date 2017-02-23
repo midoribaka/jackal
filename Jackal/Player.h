@@ -15,6 +15,9 @@ private:
 	size_t m_rum;
 
 	std::vector<IPlayItem*> m_items;
+	IPlayItem* m_last_selected;
+	QPoint m_last_point;		//todo убрать инфу о grid point в сам item
+
 
 	IGridMap* m_map;
 
