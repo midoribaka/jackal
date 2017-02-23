@@ -41,9 +41,16 @@ void PlayerQueue::reconnect_by_mask()
 {
 	if (m_mask == ALL)
 	{
+		QObject::connect(m_nord_player.get(), &IPlayer::turn_finished, m_nord_player.get(), &IPlayer::deselect);
 		QObject::connect(m_nord_player.get(), &IPlayer::turn_finished, m_east_player.get(), &IPlayer::select);
+
+		QObject::connect(m_east_player.get(), &IPlayer::turn_finished, m_east_player.get(), &IPlayer::deselect);
 		QObject::connect(m_east_player.get(), &IPlayer::turn_finished, m_south_player.get(), &IPlayer::select);
+
+		QObject::connect(m_south_player.get(), &IPlayer::turn_finished, m_south_player.get(), &IPlayer::deselect);
 		QObject::connect(m_south_player.get(), &IPlayer::turn_finished, m_west_player.get(), &IPlayer::select);
+
+		QObject::connect(m_west_player.get(), &IPlayer::turn_finished, m_west_player.get(), &IPlayer::deselect);
 		QObject::connect(m_west_player.get(), &IPlayer::turn_finished, m_nord_player.get(), &IPlayer::select);
 	}
 }

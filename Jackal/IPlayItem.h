@@ -19,13 +19,16 @@ public:
 
 	virtual ~IPlayItem() {};
 
-signals:
+	virtual void move_to(const QPoint& _pos) = 0;
 
+signals:
 	//iface
 	void activate();	//from idle to active state
 	void desactivate();	//from active to idle state
 	void select();		//from active to selected state
 	void deselect();	//from selected to active state
 
+	//signals
 	void selected();
+	void moving_finished();
 };

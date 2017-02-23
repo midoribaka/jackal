@@ -4,7 +4,6 @@
 #include <functional>
 
 #include "IGridMap.h"
-#include "ICell.h"
 #include "Deck.h"
 
 class GridMap : public IGridMap

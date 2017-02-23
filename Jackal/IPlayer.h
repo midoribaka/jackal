@@ -27,5 +27,6 @@ signals:
 	void turn_finished();
 
 	//iface functions
-	void select();
+	void select();	//to making_turn_state
+	void deselect();//to idle_state
 };

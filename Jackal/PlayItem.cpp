@@ -1,6 +1,9 @@
 #include "PlayItem.h"
 #include "ShipItem.h"
 
+#include <functional>
+#include <QDebug>
+
 IPlayItem* IPlayItem::create(ItemType _type)
 {
 	switch (_type)
@@ -11,6 +14,10 @@ IPlayItem* IPlayItem::create(ItemType _type)
 
 PlayItem::PlayItem()
 {
+	m_moving_animation = std::make_unique<QPropertyAnimation>(this, "position");
+	m_moving_animation->setEasingCurve(QEasingCurve::InOutQuart);
+
+	//machine
 	m_state_machine = new QStateMachine(this);		//owns
 
 	QState* idle_state = new QState(m_state_machine);		//не реагирует на эвенты
@@ -21,31 +28,40 @@ PlayItem::PlayItem()
 	idle_state->addTransition(this, &IPlayItem::activate, active_state);
 	active_state->addTransition(this, &IPlayItem::desactivate, idle_state);
 	m_selected_state->addTransition(this, &IPlayItem::deselect, active_state);
+	m_selected_state->addTransition(this, &PlayItem::make_moving, moving_state);
+	moving_state->addTransition(m_moving_animation.get(), &QPropertyAnimation::finished, idle_state);
 
 	QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, active_state);
 	mouse_press->setTargetState(m_selected_state);
 
 	QObject::connect(m_selected_state, &QState::entered, this, &IPlayItem::selected);	//emit selected
+	QObject::connect(moving_state, &QState::entered, [this]()
+	{
+		qDebug() << "Moving start";
+		m_moving_animation->start();
+	});
 
-	//Moving animation
-	//m_moving = std::make_unique<QPropertyAnimation>(this, "position");
-	//m_moving->setEasingCurve(QEasingCurve::InOutQuart);
-	//m_selected_state->addTransition(m_moving.get(), &QPropertyAnimation::finished, idle_state);
+	QObject::connect(moving_state, &QState::exited, this, [this]
+	{
+		qDebug() << "Moving finished";
+		emit moving_finished();
+	});
 
 	m_state_machine->setInitialState(idle_state);
 
 	m_state_machine->start();
 }
 
-void PlayItem::move_to(const QPointF& _pos)
+void PlayItem::move_to(const QPoint& _pos)
 {
-	QPointF current = pos();
-	QPointF d = _pos - current;
-	m_moving->setDuration(1000 * hypot(d.x(), d.y()) / 50);	//50px/1sec	//todo no constant
+	QPoint current = pos().toPoint();
+	QPoint d = _pos - current;
+	m_moving_animation->setDuration(1000 * hypot(d.x(), d.y()) / 50);	//50px/1sec	//todo no constant
 
-	m_moving->setStartValue(pos());
-	m_moving->setEndValue(_pos);
-	m_moving->start();
+	m_moving_animation->setStartValue(current);
+	m_moving_animation->setEndValue(_pos);
+
+	emit make_moving();
 }
 
 PlayItem::~PlayItem()

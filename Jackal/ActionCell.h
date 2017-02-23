@@ -31,19 +31,23 @@ public:
 
 		QState* action_group = new QState(m_initial_state);
 
-		QState* idle = new QState(action_group);
-		QState* active = new QState(action_group);
-		QState* selected = new QState(action_group);
+		QState* idle_state = new QState(action_group);
+		QState* active_state = new QState(action_group);
+		QState* selected_state = new QState(action_group);
 
-		idle->addTransition(this, &ActionCell::activate, active);
-		active->addTransition(this, &ActionCell::desactivate, idle);
+		idle_state->addTransition(this, &ActionCell::activate, active_state);
+		active_state->addTransition(this, &ActionCell::desactivate, idle_state);
+		selected_state->addTransition(this, &ActionCell::deselect, idle_state);
 
-		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, active);
-		mouse_press->setTargetState(selected);
+		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, active_state);
+		mouse_press->setTargetState(selected_state);
 
-		m_selection->bind_to_state(active);
+		QObject::connect(selected_state, &QState::entered, this, &ICell::selected);
+		QObject::connect(selected_state, &QState::entered, this, &ICell::deselect);	//todo
 
-		action_group->setInitialState(idle);
+		m_selection->bind_to_state(active_state);
+
+		action_group->setInitialState(idle_state);
 	}
 
 	virtual ~ActionCell()

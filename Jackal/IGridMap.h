@@ -4,9 +4,12 @@
 #include <QGraphicsScene>
 
 #include "RoundedRect.h"
+#include "ICell.h"
 
 class IGridMap : public RoundedRect
 {
+	Q_OBJECT
+
 public:
 	static IGridMap* create(size_t _px_size, QGraphicsScene* _scene);	//no shared_ptr for QGraphicItems
 
@@ -20,4 +23,7 @@ public:
 	virtual void activate_cells_around(const QPoint& _grid_pos) = 0;
 
 	virtual void desactivate_cells_around(const QPoint& _grid_pos) = 0;
+
+signals:
+	void cell_selected(const ICell* _cell);
 };

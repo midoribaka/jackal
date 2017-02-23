@@ -31,7 +31,6 @@ GridMap::GridMap(size_t _px_size, QGraphicsScene* _scene) : m_scene(_scene)
 	|
 	|
 	|
-	|
 	0,0------------->x 12,0	
 	*/
 
@@ -42,16 +41,21 @@ GridMap::GridMap(size_t _px_size, QGraphicsScene* _scene) : m_scene(_scene)
 
 		for (int y = 0; y < rn; ++y)
 		{
+			ICell* cell = nullptr;
 			if ((y == 0) || (x == 0) || (y == rn - 1) || (x == rn - 1))
-				m_cells[x][y] = ICell::create(CellType::SEA);
+				cell = ICell::create(CellType::SEA);
 			else if (((y == 1) && (x == 1)) || ((y == 1) && (x == rn - 2)) || ((y == rn - 2) && (x == 1)) || ((y == rn - 2) && (x == rn - 2)))
-				m_cells[x][y] = ICell::create(CellType::CORNER);
+				cell = ICell::create(CellType::CORNER);
 			else
-				m_cells[x][y] = deck->pop_one();
+				cell = deck->pop_one();
 
-			m_cells[x][y]->setParentItem(this);			//owns
-			m_cells[x][y]->set_side_size(cell_side_size);
-			m_cells[x][y]->setPos(grid_to_px(QPoint(x, y)));
+			cell->setParentItem(this);			//owns
+			cell->set_side_size(cell_side_size);
+			cell->setPos(grid_to_px(QPoint(x, y)));
+
+			QObject::connect(cell, &ICell::selected, this, std::bind(&IGridMap::cell_selected, this, cell));
+
+			m_cells[x][y] = cell;
 		}
 	}
 

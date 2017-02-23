@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QGraphicsView>
+#include <QPlainTextEdit>
 
 class MainWin : public QMainWindow
 {
@@ -21,6 +22,12 @@ public:
 	~MainWin();
 
 	QGraphicsView* view_widget;
+
+#ifdef _DEBUG
+	static void message_handler(QtMsgType _msg_type, const QMessageLogContext& _context, const QString& _msg);
+private:
+	static QPlainTextEdit* m_dviewer;
+#endif
 };
 
 #endif // MAINWIN_H

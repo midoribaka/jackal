@@ -20,7 +20,7 @@ class PlayItem : public IPlayItem
 public:
 	PlayItem();
 
-	void move_to(const QPointF& _pos);
+	void move_to(const QPoint& _pos) override;
 
 	virtual ~PlayItem();
 
@@ -34,5 +34,8 @@ protected:
 private:
 	QStateMachine* m_state_machine;
 	QPoint m_grid_pos;
-	std::unique_ptr<QPropertyAnimation> m_moving;
+	std::unique_ptr<QPropertyAnimation> m_moving_animation;
+
+signals:
+	void make_moving();
 };

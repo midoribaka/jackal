@@ -31,6 +31,7 @@ signals:
 	void activate();	//from idle to active
 	void desactivate();	//from active to idle
 	void select();		//from active to selected
+	void deselect();	//from selected to idle
 
 	//signals
 	void selected();

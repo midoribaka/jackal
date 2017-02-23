@@ -7,6 +7,8 @@
 
 class Player : public IPlayer
 {
+	Q_OBJECT
+
 public:
 	Player(IGridMap* _map, PlayerPos _pos, const QString& _name);
 
@@ -17,9 +19,10 @@ private:
 	std::vector<IPlayItem*> m_items;
 	IPlayItem* m_last_selected;
 	QPoint m_last_point;		//todo убрать инфу о grid point в сам item
-
-
 	IGridMap* m_map;
-
 	QString m_name;
+
+private slots:
+	void cell_selected_callback(const ICell* _selected_cell);
+	void playitem_finish_moving_callback();
 };
