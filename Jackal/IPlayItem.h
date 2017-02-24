@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CenteredAbstractShape.h"
+#include "CenteredRoundedRect.h"
 
 enum class ItemType
 {

@@ -12,11 +12,21 @@ class SeaCell : public ActionCell
 public:
 	SeaCell()
 	{
-		CenteredRoundedRect::set_image(QPixmap("./Resources/cell_img/cell_sea.png"));
+		CenteredRoundedRect::set_image(QPixmap("./Resources/cell_img/sea_tx3.jpg"));
 
 		m_mask = mask::cross();
 
 		m_state_machine->start();	//todo baaad
+	}
+
+protected:
+	void prepare() override
+	{
+		emit ICell::ready();
+	}
+
+	void run_action() override
+	{
 	}
 };
 
@@ -30,6 +40,8 @@ public:
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<> dis(1, 4);
 		m_front_side_image = QPixmap("./Resources/cell_img/empty-" + QString::number(dis(gen)) + ".png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -130,6 +142,8 @@ public:
 	QuadSideArrowCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/arrow-6.png");
+
+		m_mask = mask::cross();
 	}
 };
 
@@ -141,6 +155,8 @@ public:
 	QuadDiagonalArrowCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/arrow-7.png");
+
+		m_mask = mask::quad_diagonal();
 	}
 };
 
@@ -152,6 +168,8 @@ public:
 	HorseCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/horse.png");
+
+		m_mask = mask::horse();
 	}
 };
 
@@ -240,6 +258,8 @@ public:
 	FortressCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/fort.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -251,6 +271,8 @@ public:
 	GirlFortressCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/fort-w-aborigine.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -262,6 +284,8 @@ public:
 	RumBarrelCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/keg-of-rum.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -317,6 +341,8 @@ public:
 	Coins1Cell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/coins-1.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -328,6 +354,8 @@ public:
 	Coins2Cell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/coins-2.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -339,6 +367,8 @@ public:
 	Coins3Cell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/coins-3.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -350,6 +380,8 @@ public:
 	Coins4Cell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/coins-4.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -361,6 +393,8 @@ public:
 	Coins5Cell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/coins-5.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -372,6 +406,8 @@ public:
 	TreasureCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/treasure.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -383,6 +419,8 @@ public:
 	CarambaCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/caramba.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -405,6 +443,8 @@ public:
 	BenGunnCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/ben-gunn.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -416,6 +456,8 @@ public:
 	MissionaryCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/missionary.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -427,6 +469,8 @@ public:
 	FridayCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/friday.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -438,6 +482,8 @@ public:
 	Rum1Cell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/bottles-of-rum-1.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -449,6 +495,8 @@ public:
 	Rum2Cell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/bottles-of-rum-2.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -460,6 +508,8 @@ public:
 	Rum3Cell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/bottles-of-rum-3.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -482,6 +532,8 @@ public:
 	EarthquakeCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/earthquake.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -493,6 +545,8 @@ public:
 	JungleCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/jungle.png");
+
+		m_mask = mask::square();
 	}
 };
 
@@ -504,5 +558,7 @@ public:
 	GrassCell()
 	{
 		m_front_side_image = QPixmap("./Resources/cell_img/grass.png");
+
+		m_mask = mask::square();
 	}
 };

@@ -42,8 +42,7 @@ public:
 		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, active_state);
 		mouse_press->setTargetState(selected_state);
 
-		QObject::connect(selected_state, &QState::entered, this, &ICell::selected);
-		QObject::connect(selected_state, &QState::entered, this, &ICell::deselect);	//todo
+		QObject::connect(selected_state, &QState::entered, this, &ActionCell::prepare);
 
 		m_selection->bind_to_state(active_state);
 
@@ -53,6 +52,10 @@ public:
 	virtual ~ActionCell()
 	{
 	}
+
+protected slots:
+	virtual void prepare() = 0;
+	virtual void run_action() = 0;
 
 protected:
 	QState* m_initial_state;

@@ -20,12 +20,6 @@ public:
 		update();
 	}
 
-	virtual void set_image(const QPixmap& _pixmap)
-	{
-		m_image = _pixmap;
-		update();
-	}
-
 	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override
 	{
 		_painter->setBrush(AbstractShape::m_brush);
@@ -34,7 +28,9 @@ public:
 
 		if (!m_image.isNull())
 		{
-			_painter->drawPixmap(boundingRect(), m_image, m_image.rect());	//autoscale //todo довольно затратно
+			QRectF draw_rect = boundingRect();
+			QPixmap img = m_image.scaled(draw_rect.width(), draw_rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+			_painter->drawPixmap(boundingRect(), img, img.rect());
 		}
 	}
 
@@ -43,6 +39,5 @@ public:
 	}
 
 protected:
-	QPixmap m_image;
 	size_t m_corner_radius;
 };

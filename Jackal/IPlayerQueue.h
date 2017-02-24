@@ -2,10 +2,14 @@
 
 #include <memory>
 
+#include <QObject>
+
 #include "IPlayer.h"
 
-class IPlayerQueue
+class IPlayerQueue : public QObject
 {
+	Q_OBJECT
+
 public:
 	static std::shared_ptr<IPlayerQueue> create();
 

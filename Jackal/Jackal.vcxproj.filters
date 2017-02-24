@@ -91,6 +91,12 @@
     <ClCompile Include="GeneratedFiles\Release\moc_Player.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_IPlayerQueue.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_FlippableCell.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PirateItem.h">
@@ -105,9 +111,6 @@
     <ClInclude Include="NoActionCell.h">
       <Filter>Headers\Cells</Filter>
     </ClInclude>
-    <ClInclude Include="FlippableCell.h">
-      <Filter>Headers\Cells</Filter>
-    </ClInclude>
     <ClInclude Include="Circle.h">
       <Filter>Headers\Primitives</Filter>
     </ClInclude>
@@ -115,9 +118,6 @@
       <Filter>Headers\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="PlayerQueue.h">
-      <Filter>Headers\PlayerQueue</Filter>
-    </ClInclude>
-    <ClInclude Include="IPlayerQueue.h">
       <Filter>Headers\PlayerQueue</Filter>
     </ClInclude>
     <ClInclude Include="Deck.h">
@@ -175,6 +175,12 @@
     </CustomBuild>
     <CustomBuild Include="IGridMap.h">
       <Filter>Headers\GridMap</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPlayerQueue.h">
+      <Filter>Headers\PlayerQueue</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FlippableCell.h">
+      <Filter>Headers\Cells</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

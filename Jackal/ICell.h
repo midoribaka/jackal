@@ -34,6 +34,6 @@ signals:
 	void deselect();	//from selected to idle
 
 	//signals
-	void selected();
+	void ready();
 
 };

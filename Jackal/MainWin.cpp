@@ -63,9 +63,11 @@ MainWin::MainWin(QWidget *_parent) : QMainWindow(_parent)
 
 #ifdef _DEBUG
 	m_dviewer = new QPlainTextEdit();
+	m_dviewer->setReadOnly(true);
 
 	QPalette p = m_dviewer->palette();
 	p.setColor(QPalette::Active, QPalette::Base, Qt::black);
+	p.setColor(QPalette::Inactive, QPalette::Base, Qt::black);
 	p.setColor(QPalette::Text, QColor(0,157,169));
 	m_dviewer->setPalette(p);
 	m_dviewer->setFont(QFont("Consolas",15,1));

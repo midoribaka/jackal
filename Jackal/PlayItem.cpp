@@ -8,7 +8,7 @@ IPlayItem* IPlayItem::create(ItemType _type)
 {
 	switch (_type)
 	{
-	case ItemType::SHIP: return new ShipItem(QRectF(0, 0, 40, 40));	//todo hardcode
+	case ItemType::SHIP: return new ShipItem(QRectF(0, 0, 50, 50));	//todo hardcode
 	}
 }
 

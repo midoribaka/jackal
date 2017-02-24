@@ -21,6 +21,7 @@ public:
 	QPoint px_to_grid(const QPoint& _px_pos) const override;
 	void activate_cells_around(const QPoint& _grid_pos) override;
 	void desactivate_cells_around(const QPoint& _grid_pos) override;
+	void run_cell_action(const QPoint& _grid_pos) override;
 
 private:
 	void action_on_masked_cell(const QPoint& _grid_pos, const std::function<void(ICell*)>& _fnc);

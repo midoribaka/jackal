@@ -8,7 +8,8 @@ public:
 	ShipItem(const QRectF& _draw_rect = QRectF())
 	{
 		set_draw_rect(_draw_rect);
-		set_brush(QColor(70, 50, 10));
+
+		set_image(QPixmap("./Resources/items/pirate_ship.png"));
 
 		Selection* selection =  new RectSelection(this);	//ownership
 		selection->set_color(QColor(250, 240, 150));
@@ -17,8 +18,11 @@ public:
 
 	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override
 	{
-		_painter->setBrush(AbstractShape::m_brush);
-		_painter->setPen(AbstractShape::m_pen);
-		_painter->drawRoundRect(boundingRect(), 2, 2);
+		if (!m_image.isNull())
+		{
+			QRectF draw_rect = boundingRect();
+			QPixmap img = m_image.scaled(draw_rect.width(), draw_rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+			_painter->drawPixmap(boundingRect(), img, img.rect());
+		}
 	}
 };

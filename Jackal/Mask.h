@@ -16,6 +16,7 @@ namespace mask
 	Mask cross();
 	Mask square();
 	Mask horse();
+	Mask quad_diagonal();
 	Mask diff(const Mask& _source, const Mask& _substract);
 	Mask summ(const Mask& _set1, const Mask& _set2);
 }

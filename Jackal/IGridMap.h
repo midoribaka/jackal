@@ -24,6 +24,8 @@ public:
 
 	virtual void desactivate_cells_around(const QPoint& _grid_pos) = 0;
 
+	virtual void run_cell_action(const QPoint& _grid_pos) = 0;
+
 signals:
-	void cell_selected(const ICell* _cell);
+	void cell_ready(const ICell* _cell);
 };

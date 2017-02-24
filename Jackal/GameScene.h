@@ -4,6 +4,9 @@
 #include <memory>
 
 #include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QPropertyAnimation>
+#include <QTransform>
 
 #include "IGridMap.h"
 #include "IPlayer.h"
@@ -18,9 +21,9 @@ public:
 	{
 		IGridMap* m_grid_map = IGridMap::create(_side_size, this);	//owns by this
 
-		std::shared_ptr<IPlayer> nord_player = IPlayer::create(m_grid_map, PlayerPos::NORD, "Den");
+		std::shared_ptr<IPlayer> nord_player = IPlayer::create(m_grid_map, PlayerPos::NORD, "Denis");
 		std::shared_ptr<IPlayer> east_player = IPlayer::create(m_grid_map, PlayerPos::EAST, "Luba");
-		std::shared_ptr<IPlayer> south_player = IPlayer::create(m_grid_map, PlayerPos::SOUTH, "Nata");
+		std::shared_ptr<IPlayer> south_player = IPlayer::create(m_grid_map, PlayerPos::SOUTH, "Natasha");
 		std::shared_ptr<IPlayer> west_player = IPlayer::create(m_grid_map, PlayerPos::WEST, "Oleg");
 
 		m_player_queue = IPlayerQueue::create();

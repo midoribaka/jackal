@@ -10,7 +10,7 @@ GridMap::GridMap(size_t _px_size, QGraphicsScene* _scene) : m_scene(_scene)
 	m_scene->addItem(this);
 
 	setZValue(0);
-
+	RoundedRect::set_brush(QColor(40,40,40));
 	RoundedRect::set_draw_rect(QRectF(QPointF(0, 0), QSizeF(_px_size, _px_size))); //todo this must be maked by scene
 
 	const size_t rn = rows_num;
@@ -53,7 +53,7 @@ GridMap::GridMap(size_t _px_size, QGraphicsScene* _scene) : m_scene(_scene)
 			cell->set_side_size(cell_side_size);
 			cell->setPos(grid_to_px(QPoint(x, y)));
 
-			QObject::connect(cell, &ICell::selected, this, std::bind(&IGridMap::cell_selected, this, cell));
+			QObject::connect(cell, &ICell::ready, this, std::bind(&IGridMap::cell_ready, this, cell));
 
 			m_cells[x][y] = cell;
 		}
@@ -136,4 +136,9 @@ void GridMap::action_on_masked_cell(const QPoint& _grid_pos, const std::function
 
 		_fnc(m_cells[x][y]);
 	}
+}
+
+void GridMap::run_cell_action(const QPoint& _grid_pos)
+{
+	//m_cells[_grid_pos.x()][_grid_pos.y()]->run_action();
 }

@@ -67,6 +67,11 @@ namespace mask
 		return { {-1,1}, {0,1} , {1,1} , {-1,0} , {1,0} ,{-1,-1}, {-1,0}, {-1,-1} };
 	}
 
+	Mask quad_diagonal()
+	{
+		return diff(square(), cross());
+	}
+
 	Mask horse()
 	{
 		return { { 1,2 },{ 2,1 } ,{ 1,-2 }, { 2,-1 },{ -1,-2 },{ -2,-1 },{ -1,2 },{ -2, 1 } };

@@ -5,6 +5,8 @@
 //
 class FlippableCell : public ActionCell
 {
+	Q_OBJECT
+
 public:
 	FlippableCell() : m_back_side_image("./Resources/cell_img/cell_back.png")
 	{
@@ -62,8 +64,7 @@ public:
 		QState* back_on_top = new QState(flip_group);
 		QState* front_on_top = new QState(flip_group);
 
-		QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, back_on_top);
-		mouse_press->setTargetState(front_on_top);
+		back_on_top->addTransition(this, &FlippableCell::flip, front_on_top);
 
 		QObject::connect(back_on_top, &QState::exited, [this]
 		{
@@ -82,16 +83,20 @@ public:
 			set_image(*m_next_image);
 		});
 
+		QObject::connect(m_flip_animation.get(), &QPropertyAnimation::finished, this, &ICell::ready);
+
 		flip_group->setInitialState(back_on_top);
 		m_state_machine->start();
 	}
 
 protected:
-	void mousePressEvent(QGraphicsSceneMouseEvent *_event) override
+	void prepare() override
 	{
-		auto wrapped = new QStateMachine::WrappedEvent(this, new QMouseEvent(QEvent::MouseButtonPress, _event->pos(), _event->button(), _event->buttons(), _event->modifiers()));
-		m_state_machine->postEvent(wrapped);	//will be deleted inside
-		ActionCell::mousePressEvent(_event);
+		emit flip();
+	}
+
+	void run_action() override
+	{
 	}
 
 	QPixmap m_front_side_image;
@@ -100,4 +105,7 @@ private:
 	QPixmap m_back_side_image;	//current image is RoundedRect::image
 	std::unique_ptr<QParallelAnimationGroup> m_flip_animation;
 	QPixmap* m_next_image;
+
+signals:
+	void flip();
 };
