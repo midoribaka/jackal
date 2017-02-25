@@ -9,5 +9,10 @@ public:
 	{
 		CenteredRoundedRect::set_image(QPixmap("./Resources/cell_img/corner_cell.png"));
 	}
+
+	void run_action()
+	{
+
+	}
 };
 //

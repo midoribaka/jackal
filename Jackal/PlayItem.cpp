@@ -1,5 +1,6 @@
 #include "PlayItem.h"
 #include "ShipItem.h"
+#include "PirateItem.h"
 
 #include <functional>
 #include <QDebug>
@@ -9,6 +10,7 @@ IPlayItem* IPlayItem::create(ItemType _type)
 	switch (_type)
 	{
 	case ItemType::SHIP: return new ShipItem(QRectF(0, 0, 50, 50));	//todo hardcode
+	case ItemType::PIRATE: return new PirateItem(QRectF(0, 0, 30, 30));	//todo hardcode
 	}
 }
 
@@ -35,6 +37,7 @@ PlayItem::PlayItem()
 	mouse_press->setTargetState(m_selected_state);
 
 	QObject::connect(m_selected_state, &QState::entered, this, &IPlayItem::selected);	//emit selected
+
 	QObject::connect(moving_state, &QState::entered, [this]()
 	{
 		qDebug() << "Moving start";
@@ -66,7 +69,6 @@ void PlayItem::move_to(const QPoint& _pos)
 
 PlayItem::~PlayItem()
 {
-
 }
 
 void PlayItem::mousePressEvent(QGraphicsSceneMouseEvent *_event)

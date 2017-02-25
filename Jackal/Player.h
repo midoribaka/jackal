@@ -5,6 +5,8 @@
 #include "IPlayer.h"
 #include "IPlayItem.h"
 
+#include "ItemGroup.h"
+
 class Player : public IPlayer
 {
 	Q_OBJECT
@@ -16,13 +18,10 @@ private:
 	size_t m_coins;
 	size_t m_rum;
 
-	std::vector<IPlayItem*> m_items;
-	IPlayItem* m_last_selected;
-	QPoint m_last_point;		//todo убрать инфу о grid point в сам item
+	std::unique_ptr<ItemGroup> m_item_group;
 	IGridMap* m_map;
 	QString m_name;
 
 private slots:
 	void cell_selected_callback(const ICell* _selected_cell);
-	void playitem_finish_moving_callback();
 };

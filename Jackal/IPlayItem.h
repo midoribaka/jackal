@@ -30,5 +30,6 @@ signals:
 
 	//signals
 	void selected();
+
 	void moving_finished();
 };

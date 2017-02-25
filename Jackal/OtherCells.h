@@ -27,6 +27,7 @@ protected:
 
 	void run_action() override
 	{
+		int t = 0;
 	}
 };
 

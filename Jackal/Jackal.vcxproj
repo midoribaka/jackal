@@ -98,6 +98,7 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_IPlayer.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_IPlayerQueue.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_IPlayItem.cpp" />
+    <ClCompile Include="GeneratedFiles\Debug\moc_ItemGroup.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_MainWin.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -168,6 +169,7 @@
     <CustomBuild Include="IPlayer.h" />
     <CustomBuild Include="IPlayerQueue.h" />
     <CustomBuild Include="IPlayItem.h" />
+    <CustomBuild Include="ItemGroup.h" />
     <ClInclude Include="Mask.h" />
     <ClInclude Include="NoActionCell.h" />
     <ClInclude Include="OtherCells.h" />

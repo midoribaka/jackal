@@ -19,8 +19,11 @@ public:
 	QGraphicsScene* scene() const override;
 	QPoint grid_to_px(const QPoint& _grid_pos) const override;
 	QPoint px_to_grid(const QPoint& _px_pos) const override;
+	QPoint grid_pos(const IPlayItem* _item) const override;
 	void activate_cells_around(const QPoint& _grid_pos) override;
+	void activate_cells_around(const IPlayItem* _item) override;
 	void desactivate_cells_around(const QPoint& _grid_pos) override;
+	void desactivate_cells_around(const IPlayItem* _item) override;
 	void run_cell_action(const QPoint& _grid_pos) override;
 
 private:

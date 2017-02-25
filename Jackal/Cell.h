@@ -19,6 +19,7 @@ public:
 	void set_side_size(size_t _side) override;
 	const Mask&  mask() const  override;
 	void set_mask(const Mask& _mask) override;
+	virtual void run_action() override = 0;
 
 protected:
 	Mask m_mask;

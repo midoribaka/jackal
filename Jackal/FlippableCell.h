@@ -97,6 +97,7 @@ protected:
 
 	void run_action() override
 	{
+
 	}
 
 	QPixmap m_front_side_image;

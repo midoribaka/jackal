@@ -55,7 +55,7 @@ public:
 
 protected slots:
 	virtual void prepare() = 0;
-	virtual void run_action() = 0;
+	virtual void run_action() override = 0;
 
 protected:
 	QState* m_initial_state;

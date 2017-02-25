@@ -97,6 +97,9 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_FlippableCell.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ItemGroup.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PirateItem.h">
@@ -181,6 +184,9 @@
     </CustomBuild>
     <CustomBuild Include="FlippableCell.h">
       <Filter>Headers\Cells</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ItemGroup.h">
+      <Filter>Headers\PlayItems</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

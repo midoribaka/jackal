@@ -7,18 +7,13 @@ class PirateItem : public PlayItem
 public:
 	PirateItem(const QRectF& _draw_rect = QRectF())
 	{
+		setZValue(3);
 		set_draw_rect(_draw_rect);
 		set_brush(QColor(7, 99, 36));
 
 		Selection* selection = new RoundSelection(this);
 		selection->set_color(QColor(250, 240, 150));
 		selection->bind_to_state(m_selected_state);
-		QObject::connect(selection, &Selection::begin_hover_in, this, &PlayItem::selected);//emit signal to scene to deselect all another items by calling make_ready
-	
-		//State machine
-		QStateMachine* state_machine = new QStateMachine(this);
-		QState* item_on_ship = new QState(state_machine);
-		QState* item_not_on_ship = new QState(state_machine);
 	}
 
 	virtual void paint(QPainter *_painter, const QStyleOptionGraphicsItem *_option, QWidget *_widget = Q_NULLPTR) override

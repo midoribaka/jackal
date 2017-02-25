@@ -107,12 +107,29 @@ QPoint GridMap::px_to_grid(const QPoint& _grid_pos) const
 	return QPoint((_grid_pos.x() - padding_size) / (cell_side_size + spacer_size), (rows_num - 1) - (_grid_pos.y() - padding_size) / (cell_side_size + spacer_size));
 }
 
+QPoint GridMap::grid_pos(const IPlayItem* _item) const
+{
+	return px_to_grid(_item->pos().toPoint());
+}
+
 void GridMap::activate_cells_around(const QPoint& _grid_pos)
 {
 	action_on_masked_cell(_grid_pos, [this](ICell* _cell)
 	{
 		QMetaObject::invokeMethod(_cell, "activate", Qt::QueuedConnection);
 	});;
+}
+
+void GridMap::activate_cells_around(const IPlayItem* _item)
+{
+	if (_item)
+		activate_cells_around(px_to_grid(_item->pos().toPoint()));
+}
+
+void GridMap::desactivate_cells_around(const IPlayItem* _item)
+{
+	if (_item)
+		desactivate_cells_around(px_to_grid(_item->pos().toPoint()));
 }
 
 void GridMap::desactivate_cells_around(const QPoint& _grid_pos)
@@ -140,5 +157,5 @@ void GridMap::action_on_masked_cell(const QPoint& _grid_pos, const std::function
 
 void GridMap::run_cell_action(const QPoint& _grid_pos)
 {
-	//m_cells[_grid_pos.x()][_grid_pos.y()]->run_action();
+	m_cells[_grid_pos.x()][_grid_pos.y()]->run_action();
 }

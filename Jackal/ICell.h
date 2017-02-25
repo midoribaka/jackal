@@ -23,6 +23,8 @@ public:
 
 	virtual void set_side_size(size_t _side) = 0;
 
+	virtual void run_action() = 0;
+
 	virtual ~ICell() {};
 
 signals:
