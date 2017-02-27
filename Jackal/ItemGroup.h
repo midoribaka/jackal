@@ -19,9 +19,6 @@ public:
 	{
 		QObject::disconnect(m_current_selected, &IPlayItem::moving_finished, 0, 0);
 
-		m_current_selected->deselect();	//to active state
-		m_current_selected->desactivate();	//to idle state
-
 		m_last_selected = nullptr;
 		m_current_selected = nullptr;
 	}
@@ -32,6 +29,20 @@ public:
 			m_ship = _item;
 
 		m_items.push_back(_item);
+
+		
+		QObject::connect(_item, &IPlayItem::grid_pos_changed, [this, _item]()
+		{
+			if ((_item != m_ship) && (m_ship->grid_pos() == _item->grid_pos()))
+			{
+				m_ship->grab_child_item(_item);
+			}
+			else if ((_item != m_ship) && (m_ship->grid_pos() != _item->grid_pos()))
+			{
+				m_ship->grab_child_item(_item);
+			}
+		});
+		
 	}
 
 	void set_position(const QPoint& _px_pos)

@@ -22,17 +22,27 @@ Player::Player(IGridMap* _map, PlayerPos _pos, const QString& _name) : m_coins(0
 	state_machine->setInitialState(idle_state);
 
 	//items
-	m_item_group = std::make_unique<ItemGroup>();
-	m_item_group->add_item(IPlayItem::create(ItemType::SHIP), ItemType::SHIP);
-	m_item_group->add_item(IPlayItem::create(ItemType::PIRATE), ItemType::PIRATE);
+	IPlayItem* ship = IPlayItem::create(ItemType::SHIP);
+	IPlayItem* pirate = IPlayItem::create(ItemType::PIRATE);
+
+	QPoint begin_pos;
 
 	switch (_pos)
 	{
-	case PlayerPos::NORD:	m_item_group->set_position(m_map->grid_to_px(QPoint(6, 12)));	break;	//todo hardcode
-	case PlayerPos::EAST:	m_item_group->set_position(m_map->grid_to_px(QPoint(12, 6)));	break;
-	case PlayerPos::SOUTH:	m_item_group->set_position(m_map->grid_to_px(QPoint(6, 0)));	break;
-	case PlayerPos::WEST:	m_item_group->set_position(m_map->grid_to_px(QPoint(0, 6)));	break;
+	case PlayerPos::NORD:	begin_pos = QPoint(6, 12);	break;	//todo hardcode
+	case PlayerPos::EAST:	begin_pos = QPoint(12, 6);	break;
+	case PlayerPos::SOUTH:	begin_pos = QPoint(6, 0);	break;
+	case PlayerPos::WEST:	begin_pos = QPoint(0, 6);	break;
 	}
+
+	m_item_group = std::make_unique<ItemGroup>();
+	m_item_group->add_item(ship, ItemType::SHIP);
+	m_item_group->add_item(pirate, ItemType::PIRATE);
+
+	ship->set_grid_pos(begin_pos);
+	pirate->set_grid_pos(begin_pos);
+
+	m_item_group->set_position(m_map->grid_to_px(begin_pos));
 
 	m_item_group->add_to_scene(m_map->scene());		//owns
 
@@ -66,7 +76,7 @@ Player::Player(IGridMap* _map, PlayerPos _pos, const QString& _name) : m_coins(0
 	//PLAYER TURN END
 	QObject::connect(making_turn_state, &QState::exited, [this]
 	{
-		m_item_group->reset();	//last_selected = current_selected = nullptr; current_selected to idle_state
+		m_item_group->reset();	//last_selected = current_selected = nullptr;
 		QObject::disconnect(m_map, &IGridMap::cell_ready, this, &Player::cell_selected_callback);
 	});
 

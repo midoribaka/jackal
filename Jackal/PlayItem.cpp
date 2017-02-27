@@ -14,9 +14,9 @@ IPlayItem* IPlayItem::create(ItemType _type)
 	}
 }
 
-PlayItem::PlayItem()
+PlayItem::PlayItem() : m_grid_pos(-1,-1)
 {
-	m_moving_animation = std::make_unique<QPropertyAnimation>(this, "position");
+	m_moving_animation = std::make_unique<QPropertyAnimation>(this, "common_pos");
 	m_moving_animation->setEasingCurve(QEasingCurve::InOutQuart);
 
 	//machine
@@ -25,30 +25,16 @@ PlayItem::PlayItem()
 	QState* idle_state = new QState(m_state_machine);		//не реагирует на эвенты
 	QState* active_state = new QState(m_state_machine);		//может быть выбран
 	m_selected_state = new QState(m_state_machine);			//выбран
-	QState* moving_state = new QState(m_state_machine);		//перемещается
 
 	idle_state->addTransition(this, &IPlayItem::activate, active_state);
 	active_state->addTransition(this, &IPlayItem::desactivate, idle_state);
 	m_selected_state->addTransition(this, &IPlayItem::deselect, active_state);
-	m_selected_state->addTransition(this, &PlayItem::make_moving, moving_state);
-	moving_state->addTransition(m_moving_animation.get(), &QPropertyAnimation::finished, idle_state);
 
 	QEventTransition *mouse_press = new QEventTransition(this, QEvent::MouseButtonPress, active_state);
 	mouse_press->setTargetState(m_selected_state);
 
-	QObject::connect(m_selected_state, &QState::entered, this, &IPlayItem::selected);	//emit selected
-
-	QObject::connect(moving_state, &QState::entered, [this]()
-	{
-		qDebug() << "Moving start";
-		m_moving_animation->start();
-	});
-
-	QObject::connect(moving_state, &QState::exited, this, [this]
-	{
-		qDebug() << "Moving finished";
-		emit moving_finished();
-	});
+	QObject::connect(m_selected_state, &QState::entered, this, &IPlayItem::selected);
+	QObject::connect(m_moving_animation.get(), &QPropertyAnimation::finished, this, &IPlayItem::moving_finished);	
 
 	m_state_machine->setInitialState(idle_state);
 
@@ -64,7 +50,9 @@ void PlayItem::move_to(const QPoint& _pos)
 	m_moving_animation->setStartValue(current);
 	m_moving_animation->setEndValue(_pos);
 
-	emit make_moving();
+	deselect();
+	desactivate();
+	m_moving_animation->start();
 }
 
 PlayItem::~PlayItem()
@@ -77,4 +65,37 @@ void PlayItem::mousePressEvent(QGraphicsSceneMouseEvent *_event)
 	m_state_machine->postEvent(wrapped);	//will be deleted inside
 	AbstractShape::mousePressEvent(_event);
 	_event->accept();
+}
+
+void PlayItem::set_grid_pos(const QPoint& _pos)
+{
+	m_grid_pos = _pos;
+	emit grid_pos_changed();
+}
+
+QPoint PlayItem::grid_pos() const
+{
+	return m_grid_pos;
+}
+
+void PlayItem::grab_child_item(IPlayItem* _item)
+{
+	m_child_items.insert(qobject_cast<PlayItem*>(_item));
+}
+
+void PlayItem::release_child_item(IPlayItem* _item)
+{
+	m_child_items.erase(qobject_cast<PlayItem*>(_item));
+}
+
+QPoint PlayItem::common_pos() const
+{
+	return pos().toPoint();
+}
+
+void PlayItem::set_common_pos(const QPoint& _pos)
+{
+	setPos(_pos);
+	for (auto& it : m_child_items)
+		it->setPos(_pos);
 }

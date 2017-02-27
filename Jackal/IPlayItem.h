@@ -21,6 +21,14 @@ public:
 
 	virtual void move_to(const QPoint& _pos) = 0;
 
+	virtual void set_grid_pos(const QPoint& _pos) = 0;
+
+	virtual QPoint grid_pos() const = 0;
+
+	virtual void grab_child_item(IPlayItem* _item) = 0;
+
+	virtual void release_child_item(IPlayItem* _item) = 0;
+
 signals:
 	//iface
 	void activate();	//from idle to active state
@@ -30,6 +38,7 @@ signals:
 
 	//signals
 	void selected();
-
 	void moving_finished();
+	void grid_pos_changed();
+
 };
